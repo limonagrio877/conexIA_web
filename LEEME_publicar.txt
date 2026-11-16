@@ -1,0 +1,44 @@
+ConexIA · Cómo publicar el sitio en conexiargentina.com
+=========================================================
+
+Contenido de esta carpeta (se sube completa, tal cual):
+  index.html        la página
+  privacidad.html   política de privacidad
+  og.png            imagen que aparece al compartir el link en WhatsApp y redes
+  favicon.svg       ícono de la pestaña
+
+1) Subir el sitio (Netlify, gratis)
+  - Entrar a https://app.netlify.com/drop con una cuenta de MDA o de ConexIA.
+  - Arrastrar ESTA carpeta completa a la página.
+  - Netlify da una dirección provisoria del tipo algo.netlify.app: abrirla y revisar.
+
+2) Conectar el dominio (lo hace Marcos o Matías, que tienen el panel)
+  - En Netlify: Domain management > Add a domain > conexiargentina.com.
+  - En el panel donde está registrado el dominio, cargar estos registros DNS:
+      Tipo A      nombre @     valor 75.2.60.5
+      Tipo CNAME  nombre www   valor (la dirección algo.netlify.app)
+  - El cambio puede tardar de minutos a unas horas. Netlify activa el HTTPS solo.
+
+3) Activar la transmisión en vivo
+  - Ya están cargados los dos links del vivo:
+      Día 1 (19/11): https://youtu.be/x4JWslvTCTE
+      Día 2 (20/11): https://youtube.com/live/BgMGxYd03_Q
+    Desde la medianoche del 20/11 el sitio muestra solo el del día 2.
+  - Para cambiarlos: abrir index.html con un editor de texto, buscar  const LIVE =  y reemplazar los links.
+  - Formatos que sirven: link del evento programado en YouTube
+    (youtube.com/live/..., youtube.com/watch?v=... o youtu.be/...).
+    También sirve el link del canal en formato youtube.com/channel/UC...
+    (el formato youtube.com/@nombre NO sirve para embeber).
+  - Guardar y volver a arrastrar la carpeta en Netlify (Deploys > arrastrar).
+  - El 19 y el 20 de noviembre, desde una hora antes de las 14 h y hasta las 20:30 h,
+    el sitio abre con el video grande en la portada y aparece el botón rojo "En vivo".
+  - Para ver cómo queda antes de esos días: abrir el sitio con ?envivo al final
+    (ej.: conexiargentina.com/?envivo).
+
+Música de fondo
+  - Suena solo cuando alguien toca el botón "Sonido". Es el archivo tema.mp3: tiene que estar
+    en la misma carpeta que index.html. Es un tema original generado con IA (Magnific / ElevenLabs).
+  - Para cambiarla: reemplazar tema.mp3 por otro archivo con el mismo nombre.
+
+4) Actualizar más adelante
+  - Cualquier cambio: se reemplaza el archivo y se vuelve a arrastrar la carpeta en Deploys.

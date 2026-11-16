@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ConexIA · Conexiones para la Industria Argentina</title>
+<meta name="description" content="ConexIA es la red nacional que conecta empresas, autoridades, bancos y universidades. Primer foro: 19 y 20 de noviembre de 2026 en Río Gallegos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://conexiargentina.com/">
+<meta property="og:title" content="ConexIA · Industria que se conecta">
+<meta property="og:description" content="Red nacional de la industria argentina. Primer foro: 19 y 20 de noviembre, Complejo Cultural de Río Gallegos.">
+<meta property="og:image" content="https://conexiargentina.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0F2237">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+:root {
+  --acero: #0F2237; --acero-2: #142B45; --celeste: #74ACDF; --profundo: #2F80C2; --dorado: #F6B40E;
+  --texto: #F4F6F8; --texto-2: #B9C7D6; --texto-3: #8A9DB2; --linea: rgba(213, 221, 229, .16);
+  --display: 'Archivo', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --out: cubic-bezier(.16, 1, .3, 1); --gut: clamp(16px, 4vw, 56px);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --acero: #0F2237; } }
+:root[data-theme="dark"] { --acero: #0F2237; }
+* { box-sizing: border-box; }
+html, body { background: var(--acero); }
+body { margin: 0; color: var(--texto); font-family: var(--display); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--dorado); outline-offset: 3px; border-radius: 4px; }
+.mono { font-family: var(--mono); font-weight: 500; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+
+/* Escena fija */
+#map { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100lvh; display: block; z-index: 0; }
+.scrim { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(15,34,55,.94) 0%, rgba(15,34,55,.78) 28%, rgba(15,34,55,0) 52%),
+              linear-gradient(180deg, rgba(15,34,55,.8) 0%, rgba(15,34,55,0) 14%); }
+
+/* Cabecera, sin desenfoque */
+header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: 18px var(--gut); pointer-events: none; }
+header > * { pointer-events: auto; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--texto); text-decoration: none; font-weight: 800; font-size: 21px; letter-spacing: -0.025em; }
+.brand b { color: var(--celeste); font-weight: 800; }
+.brand svg { width: 30px; height: 30px; }
+.tools { display: flex; gap: 10px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--linea); background: rgba(15,34,55,.6); color: var(--texto); font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; transition: border-color .18s, background-color .18s; }
+.pill:hover { border-color: rgba(116,172,223,.6); }
+.pill.cta { background: var(--dorado); border-color: var(--dorado); color: var(--acero); }
+.pill.cta:hover { background: #ffc531; }
+.eq { display: inline-flex; gap: 2px; align-items: flex-end; height: 12px; }
+.eq i { width: 2px; height: 4px; background: currentColor; border-radius: 1px; transition: height .3s var(--out); }
+.snd[aria-pressed="true"] .eq i:nth-child(1) { height: 8px; } .snd[aria-pressed="true"] .eq i:nth-child(2) { height: 12px; } .snd[aria-pressed="true"] .eq i:nth-child(3) { height: 6px; }
+.prog { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 30; background: var(--celeste); transform-origin: 0 50%; transform: scaleX(0); }
+
+/* HUD */
+.hud { position: fixed; z-index: 10; left: var(--gut); bottom: 22px; color: var(--texto-3); display: flex; gap: 18px; pointer-events: none; }
+.hud b { color: var(--texto-2); font-weight: 500; }
+.view { position: fixed; z-index: 10; right: var(--gut); bottom: 18px; display: flex; padding: 3px; border-radius: 999px; border: 1px solid var(--linea); background: rgba(15,34,55,.7); transition: opacity .3s var(--out); }
+.view.off { opacity: 0; pointer-events: none; }
+.view button { min-height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; color: var(--texto-2); font-weight: 600; font-size: 14px; cursor: pointer; transition: background-color .2s, color .2s; }
+.view button[aria-pressed="true"] { background: var(--texto); color: var(--acero); }
+.rail { position: fixed; z-index: 10; right: calc(var(--gut) - 6px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; }
+.rail button { display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-height: 28px; padding: 0 6px; border: 0; background: none; color: var(--texto-3); font-size: 13px; font-weight: 600; cursor: pointer; }
+.rail span { opacity: 0; transform: translateX(6px); transition: opacity .2s var(--out), transform .2s var(--out); white-space: nowrap; }
+.rail i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .5; transition: transform .3s var(--out), opacity .3s, background-color .3s; }
+.rail button:hover span, .rail button[aria-current="true"] span { opacity: 1; transform: none; }
+.rail button[aria-current="true"] { color: var(--texto); }
+.rail button[aria-current="true"] i { background: var(--dorado); opacity: 1; transform: scale(1.5); }
+
+/* Capítulos */
+main { position: relative; z-index: 5; pointer-events: none; }
+.ch { position: relative; min-height: 130vh; padding: 0 var(--gut); }
+.ch.flow { min-height: 0; padding-top: 30vh; padding-bottom: 30vh; }
+.panel { position: sticky; top: 22vh; width: min(31rem, 40vw); pointer-events: auto; will-change: opacity, transform; }
+.flow .panel { position: relative; top: 0; }
+.hero { height: 300vh; padding: 0; }
+.hero .panel { position: sticky; top: 0; height: 100vh; width: auto; display: flex; flex-direction: column; justify-content: center; padding: 0 var(--gut); }
+.hero .panel { pointer-events: none; }
+.hero .panel > * { max-width: 36rem; pointer-events: auto; }
+.hint .drag { color: var(--celeste); }
+.kicker { color: var(--celeste); margin: 0 0 18px; }
+h1 { font-size: clamp(2.9rem, 6.2vw, 5.8rem); line-height: .98; letter-spacing: -0.035em; font-weight: 800; margin: 0 0 22px; text-wrap: balance; }
+h2 { font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.05; letter-spacing: -0.028em; font-weight: 700; margin: 0 0 20px; text-wrap: balance; }
+h1 b, h2 b { color: var(--celeste); font-weight: inherit; }
+.bajada { font-weight: 700; font-size: 13px; letter-spacing: .22em; color: var(--texto-2); margin: 0 0 28px; }
+.bajada span { color: var(--dorado); }
+.lead { color: var(--texto-2); font-size: 18px; max-width: 34ch; margin: 0 0 24px; text-wrap: pretty; }
+.hint { display: flex; align-items: center; gap: 12px; color: var(--texto-3); margin-top: 18px; }
+.hint i { display: block; width: 1px; height: 36px; background: linear-gradient(var(--celeste), transparent); }
+
+.insts { list-style: none; margin: 8px 0 0; padding: 0; border-top: 1px solid var(--linea); }
+.inst { width: 100%; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 2px; border: 0; border-bottom: 1px solid var(--linea); background: none; text-align: left; cursor: pointer; transition: color .18s; }
+.inst strong { display: block; font-weight: 700; font-size: 16px; }
+.inst small { display: block; color: var(--texto-3); font-size: 14px; }
+.inst .go { color: var(--celeste); font-size: 20px; transition: transform .2s var(--out); }
+.inst:hover .go { transform: translateX(4px); }
+
+.panel.compact { top: 11vh; }
+.panel.compact h2 { font-size: clamp(1.8rem, 3vw, 2.7rem); margin-bottom: 12px; }
+.panel.compact .lead { margin-bottom: 8px; }
+.miembros { margin-top: 6px; }
+.mg { color: var(--texto-3); margin: 10px 0 6px; }
+.mchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mchip { min-height: 28px; padding: 0 11px; border-radius: 999px; border: 1px solid var(--linea); background: rgba(15,34,55,.6); color: var(--texto); font-weight: 600; font-size: 13px; cursor: pointer; transition: border-color .18s, background-color .18s; }
+.mchip:hover, .mchip:focus-visible { border-color: var(--celeste); background: rgba(116,172,223,.12); }
+.flink { color: var(--celeste); font-weight: 600; margin-top: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+.chip { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--linea); background: rgba(15,34,55,.55); color: var(--texto-2); font-weight: 600; font-size: 14px; cursor: pointer; transition: background-color .18s, color .18s, border-color .18s; }
+.chip:hover { border-color: rgba(116,172,223,.6); color: var(--texto); }
+.chip[aria-pressed="true"] { background: var(--celeste); border-color: var(--celeste); color: var(--acero); }
+.eje-txt { color: var(--texto-2); min-height: 3.2em; margin: 0; max-width: 34ch; }
+
+.datos { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 4px 0 20px; border-top: 1px solid var(--linea); }
+.dato { padding: 14px 0; border-bottom: 1px solid var(--linea); }
+.dato span { color: var(--texto-3); display: block; margin-bottom: 2px; }
+.dato p { margin: 0; font-weight: 700; font-size: 18px; }
+@media (min-width: 761px) and (max-height: 800px) {
+  h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 12px; }
+  .dato { padding: 9px 0; } .datos { margin-bottom: 12px; }
+  .live-ph { padding: 11px 16px; } .live-btns a { padding: 9px 14px; }
+  .hud { display: none; }
+}
+.vivo { display: flex; gap: 12px; align-items: flex-start; color: var(--texto-2); font-size: 15px; }
+.vivo svg { flex: none; margin-top: 3px; }
+
+form { display: grid; gap: 14px; margin-top: 8px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; color: var(--texto-2); }
+input, select, textarea { width: 100%; min-height: 44px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--linea); background: rgba(15,34,55,.75); color: var(--texto); font-weight: 500; transition: border-color .18s; }
+input:focus, select:focus, textarea:focus { border-color: var(--celeste); outline: none; }
+textarea { min-height: 84px; resize: vertical; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; color: var(--texto-3); }
+.check input { width: 18px; min-height: 18px; height: 18px; margin-top: 3px; accent-color: var(--dorado); }
+.btn { justify-self: start; min-height: 46px; padding: 0 22px; border-radius: 999px; border: 0; background: var(--dorado); color: var(--acero); font-weight: 700; cursor: pointer; transition: background-color .18s, transform .12s; }
+.btn:hover { background: #ffc531; } .btn:active { transform: scale(.98); }
+.fine { margin: 12px 0 0; color: var(--texto-3); font-size: 14px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+footer a { color: var(--texto-2); }
+.foro-p { width: min(34rem, 42vw); }
+.foro-p .lead { margin-bottom: 16px; }
+.foro-p h2 { margin-bottom: 10px; }
+.foro-datos { margin: 0 0 12px; font: 600 15px/1.45 Archivo, sans-serif; color: #fff; }
+.foro-datos b { display: block; font-weight: 600; } .foro-datos i { font-style: normal; color: var(--celeste); margin: 0 6px; }
+.foro-p .fine { margin-top: 10px; }
+@media (max-height: 800px) and (min-width: 761px) { .foro-p .lead, .foro-p .fine { display: none; } .foro-p .tv { max-width: calc((100vh - 330px) * 1.6); } }
+.tv { border-radius: 14px; overflow: hidden; background: #0B1A2B; border: 1px solid var(--linea); box-shadow: 0 18px 50px rgba(0,0,0,.35); }
+.tv-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--linea); }
+.tv-tabs button { padding: 10px 12px; font: 600 14px Archivo, sans-serif; color: var(--texto-2); background: none; border: 0; cursor: pointer; }
+.tv-tabs button + button { border-left: 1px solid var(--linea); }
+.tv-tabs button[aria-selected="true"] { color: #fff; background: rgba(116,172,223,.14); box-shadow: inset 0 -2px 0 var(--celeste); }
+.tv-screen { position: relative; aspect-ratio: 16/9; background: #000; }
+.tv-screen iframe, .tv-play, .tv-play img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.tv-play { padding: 0; background: #000; cursor: pointer; }
+.tv-play img { object-fit: cover; transition: transform .6s var(--out), filter .4s; }
+.tv-play:hover img { transform: scale(1.03); filter: brightness(1.08); }
+.tv-btn { position: absolute; left: 73%; top: 50%; width: 68px; height: 68px; margin: -34px 0 0 -34px; border-radius: 50%; background: #E5484D; display: grid; place-items: center; box-shadow: 0 0 0 8px rgba(229,72,77,.25), 0 10px 30px rgba(0,0,0,.4); transition: transform .3s var(--out); }
+.tv-btn svg { width: 30px; height: 30px; fill: #fff; margin-left: 4px; }
+.tv-play:hover .tv-btn { transform: scale(1.08); }
+.tv-cap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0; padding: 10px 14px; font-size: 14px; }
+.tv-cap #liveT { font-weight: 700; } .tv-sub { color: var(--texto-2); }
+.tv-cap a { margin-left: auto; color: var(--celeste); font-weight: 600; text-decoration: none; font-size: 13px; }
+.live { margin: 4px 0 6px; border-radius: 12px; overflow: hidden; background: #0B1A2B; border: 1px solid var(--linea); }
+.live iframe { display: block; width: 100%; aspect-ratio: 16/9; border: 0; }
+.live-ph { display: flex; gap: 14px; align-items: center; padding: 16px 18px; }
+.live-ph strong { display: block; font-size: 16px; }
+.live-ph span { color: var(--texto-2); font-size: 14px; }
+.live-btns { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--linea); }
+.live-btns a { padding: 12px 16px; font-weight: 600; font-size: 14px; color: var(--texto); text-decoration: none; text-align: center; }
+.live-btns a + a { border-left: 1px solid var(--linea); }
+.live-btns a:hover { background: rgba(116,172,223,.12); }
+.live-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 0 4px rgba(229,72,77,.18); }
+.livepill { background: rgba(229,72,77,.14); border-color: rgba(229,72,77,.5); }
+.livepill[hidden] { display: none; }
+.hero .panel > .hero-live { max-width: min(44rem, 56vw, 100%); width: 100%; margin: 0 0 22px; }
+.hero-live[hidden] { display: none; }
+.panel, .rail { transition: opacity .45s var(--out); }
+.netfocus main .panel, .netfocus .rail { opacity: 0 !important; pointer-events: none !important; }
+.scrim { transition: opacity .45s; }
+.netfocus .scrim { opacity: 0; }
+.nback { position: fixed; z-index: 25; left: 50%; top: 84px; transform: translate(-50%, -8px); opacity: 0; pointer-events: none; transition: opacity .35s, transform .35s var(--out);
+  font: 600 14px Archivo, sans-serif; color: var(--texto); background: rgba(19,48,77,.85); border: 1px solid var(--linea); border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+.netfocus .nback { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.hero-live .frame { position: relative; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid rgba(229,72,77,.45); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.hero-live iframe { display: block; width: 100%; aspect-ratio: 16/9; border: 0; }
+.hero-live .cap { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 14px; color: var(--texto-2); }
+.hero-live .cap b { color: #fff; letter-spacing: .06em; text-transform: uppercase; font-size: 12px; }
+.envivo .hero .lead, .envivo .hero .hint, .envivo .hero .bajada { display: none; }
+.envivo .hero h1 { font-size: clamp(2rem, 3.6vw, 3rem); }
+@media (max-width: 760px) { .envivo .hero .panel { justify-content: center; padding-bottom: 0; } .hero .panel > .hero-live { max-width: 100%; } .hero-live .cap span:last-child { display: none; } .envivo .snd { display: none; } }
+.livepill { white-space: nowrap; }
+.msg { margin: 0; color: var(--celeste); min-height: 1.5em; font-size: 15px; }
+.msg.err { color: #FFB4A8; }
+
+.demo-note { color: var(--texto-3); margin: 0 0 14px; }
+.dir-h { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+.dir ul { list-style: none; padding: 0; margin: 0; max-height: 280px; overflow: auto; border-top: 1px solid var(--linea); overscroll-behavior: contain; }
+.dir li { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; padding: 10px 2px; border-bottom: 1px solid var(--linea); font-size: 14px; color: var(--texto-2); }
+.dir li strong { color: var(--texto); font-weight: 600; }
+
+.contactos { border-top: 1px solid var(--linea); }
+.contacto { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--linea); }
+.contacto .mono { display: block; color: var(--texto-3); margin-bottom: 2px; }
+.contacto strong { font-size: 17px; word-break: break-word; }
+.copy { flex: none; min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--linea); background: none; color: var(--texto); font-weight: 600; font-size: 14px; cursor: pointer; }
+.copy:hover { border-color: var(--celeste); }
+
+footer { position: relative; z-index: 5; padding: 40px var(--gut) 90px; color: var(--texto-3); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 28px; border-top: 1px solid var(--linea); background: var(--acero); }
+
+/* Ficha */
+.ficha { position: fixed; z-index: 40; top: 16px; right: 16px; bottom: 16px; width: min(400px, calc(100vw - 32px)); padding: 28px; border-radius: 16px; background: #13304D; box-shadow: 0 24px 60px rgba(0,0,0,.45); display: flex; flex-direction: column; gap: 10px;
+  transform: translateX(calc(100% + 24px)); visibility: hidden; transition: transform .2s ease-in, visibility 0s .2s; }
+.ficha.open { transform: none; visibility: visible; transition: transform .42s var(--out), visibility 0s; }
+.ficha .x { align-self: flex-end; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--linea); background: none; color: var(--texto); font-size: 20px; cursor: pointer; }
+.ficha .rol { color: var(--dorado); margin-top: 8px; }
+.ficha h3 { margin: 0; font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; }
+.ficha p { margin: 0; color: var(--texto-2); }
+.ficha .pend { margin-top: auto; color: var(--texto-3); font-size: 14px; border-top: 1px solid var(--linea); padding-top: 14px; }
+.proto { position: fixed; z-index: 10; left: 50%; bottom: 22px; transform: translateX(-50%); color: var(--texto-3); pointer-events: none; }
+
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .03em .12em; margin: 0 -.03em -.12em; }
+.wi { display: inline-block; }
+.eje-txt.in { animation: rise .55s var(--out); }
+.dir li { animation: rise .5s var(--out) both; animation-delay: calc(var(--i, 0) * 35ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.inst { position: relative; }
+.inst::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--celeste); transform: scaleX(0); transform-origin: 0 50%; transition: transform .45s var(--out); }
+.inst:hover::after, .inst:focus-visible::after { transform: scaleX(1); }
+.chip[aria-pressed="true"] { animation: pop .35s var(--out); }
+@keyframes pop { 50% { transform: scale(1.06); } }
+@media (max-width: 820px) {
+  .scrim { background: linear-gradient(0deg, rgba(15,34,55,.96) 0%, rgba(15,34,55,.86) 34%, rgba(15,34,55,0) 62%), linear-gradient(180deg, rgba(15,34,55,.85) 0%, rgba(15,34,55,0) 12%); }
+  .panel { width: 100%; top: auto; }
+  .ch { min-height: 130vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 12vh; }
+  .ch .panel { position: sticky; bottom: 10vh; }
+  .ch.flow { display: block; padding-top: 50vh; }
+  .hero .panel { justify-content: flex-end; padding-bottom: 14vh; }
+  .rail, .proto, .hud .zoom { display: none; }
+  .tools .snd .lbl { display: none; }
+  .row2, .dir-h { grid-template-columns: 1fr; }
+  .hud { bottom: 18px; }
+  .view { bottom: 12px; }
+  .ficha { top: auto; left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 70vh; transform: translateY(calc(100% + 24px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="prog" id="prog"></div>
+<canvas id="map" aria-label="Mapa de Argentina en hexágonos que muestra la red ConexIA" role="img"></canvas>
+<div class="scrim"></div>
+
+<header>
+  <a class="brand" href="#top" aria-label="ConexIA, inicio">
+    <svg viewBox="-112 -112 224 224" aria-hidden="true"><polygon points="0,-100 86.6,-50 86.6,50 0,100 -86.6,50 -86.6,-50" fill="none" stroke="#fff" stroke-width="17.8" stroke-linejoin="round"/><g stroke="#74ACDF" stroke-width="8" stroke-linecap="round"><line x2="-43" y2="-39"/><line x2="43" y2="-39"/><line x2="-43" y2="39"/><line x2="43" y2="39"/></g><g fill="#74ACDF"><circle cx="-43" cy="-39" r="15.2"/><circle cx="43" cy="-39" r="15.2"/><circle cx="-43" cy="39" r="15.2"/><circle cx="43" cy="39" r="15.2"/></g><circle r="22.3" fill="#0F2237"/><circle r="17.2" fill="#F6B40E"/></svg>
+    <span>Conex<b>IA</b></span>
+  </a>
+  <div class="tools">
+    <button class="pill snd" id="snd" type="button" aria-pressed="false" aria-label="Sonido"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="lbl">Sonido</span></button>
+    <a class="pill livepill" href="#foro" id="livePill" hidden><span class="live-dot" aria-hidden="true"></span>En vivo</a>
+    <a class="pill cta" href="#sumate" data-jump="5">Sumate</a>
+  </div>
+</header>
+
+<nav class="rail" id="rail" aria-label="Capítulos"></nav>
+<button class="nback" id="nback" type="button">← Volver a la red</button>
+<div class="hud mono" aria-hidden="true"><span id="coord">—</span><span class="zoom" id="zoom"></span></div>
+<div class="view off" id="view" role="group" aria-label="Vista">
+  <button type="button" data-view="mapa" aria-pressed="true">Mapa</button>
+  <button type="button" data-view="red" aria-pressed="false">Red</button>
+</div>
+
+<main id="top">
+  <section class="ch hero" data-key="globo" data-name="Inicio">
+    <div class="panel">
+      <div class="hero-live" id="heroLive" hidden>
+        <p class="cap"><span class="live-dot" aria-hidden="true"></span><b>En vivo</b><span>1.er Foro ConexIA · Complejo Cultural, Río Gallegos</span></p>
+        <div class="frame" id="heroFrame"></div>
+      </div>
+      <p class="mono kicker">Red ConexIA</p>
+      <h1>Industria que se <b>conecta.</b></h1>
+      <p class="bajada">CONEXIONES PARA LA <span>I</span>NDUSTRIA <span>A</span>RGENTINA</p>
+      <p class="lead">Una red nacional que sienta en la misma mesa a empresas, autoridades, bancos y universidades para concretar negocios y trabajo genuino.</p>
+      <p class="hint mono"><i></i><span>Bajá para llegar a la red<span class="drag" id="dragHint"> · o arrastrá el planeta</span></span></p>
+    </div>
+  </section>
+
+  <section class="ch" data-key="falta" data-name="Lo que falta">
+    <div class="panel">
+      <h2>En cada provincia ya se conocen. Falta sentarlos a <b>trabajar juntos.</b></h2>
+      <p class="lead">Empresas que buscan con quién crecer, autoridades con proyectos, bancos y universidades. Cuando no se encuentran, se pierden inversiones y empleo. ConexIA existe para que ese encuentro pase.</p>
+    </div>
+  </section>
+
+  <section class="ch" data-key="red" data-name="La red" id="red">
+    <div class="panel compact">
+      <h2>La red ya está <b>en marcha.</b></h2>
+      <p class="lead">17 instituciones y empresas, de Santa Cruz a Buenos Aires. Tocá una para conocerla.</p>
+      <div class="miembros" id="miembros"></div>
+    </div>
+  </section>
+
+  <section class="ch" data-key="ejes" data-name="Los ejes">
+    <div class="panel">
+      <h2>Nueve industrias, <b>una misma red.</b></h2>
+      <div class="chips" role="group" aria-label="Ejes temáticos" id="chips"></div>
+      <p class="eje-txt" id="ejeTxt" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="ch" data-key="foro" data-name="El foro" id="foro">
+    <div class="panel foro-p">
+      <h2>El foro se hace en <b>Río Gallegos.</b></h2>
+      <p class="foro-datos"><b>19 y 20 de noviembre <i>·</i> 14 a 20 h</b><b>Complejo Cultural <i>·</i> Ramón y Cajal 51</b></p>
+      <p class="lead">Exposiciones cortas de autoridades y empresas, y tiempo para armar acuerdos. Seguilo en vivo desde acá.</p>
+      <div class="tv" id="live">
+        <div class="tv-tabs" role="tablist" aria-label="Día de la transmisión">
+          <button type="button" role="tab" data-d="1" aria-selected="true">Día 1 · jue 19</button>
+          <button type="button" role="tab" data-d="2" aria-selected="false">Día 2 · vie 20</button>
+        </div>
+        <div class="tv-screen" id="tvScreen">
+          <button type="button" class="tv-play" id="tvPlay" aria-label="Ver la transmisión en vivo">
+            <img id="tvPoster" src="mini_dia1.jpg" alt="1.er Foro ConexIA, transmisión en vivo" width="960" height="540">
+            <span class="tv-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
+        </div>
+        <p class="tv-cap"><span class="live-dot" aria-hidden="true"></span><span id="liveT">Transmisión en vivo</span><span class="tv-sub" id="liveS">· 14 a 20 h, por YouTube</span><a id="tvYT" href="#" target="_blank" rel="noopener">Abrir en YouTube ↗</a></p>
+      </div>
+      <p class="fine">Ingreso presencial con acreditación. La transmisión es abierta para todos.</p>
+    </div>
+  </section>
+
+  <section class="ch" data-key="punto" data-name="Sumate" id="sumate">
+    <div class="panel">
+      <h2>Tu empresa puede ser el <b>próximo punto</b> de la red.</h2>
+      <p class="lead">Completá el formulario de alta. Revisamos cada pedido y te contactamos para sumarte a la red ConexIA.</p>
+      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScReXBXbEWVb7lYosqiqGpwDxjlBS_z57pHrvcqo8KSr8TCCA/viewform" target="_blank" rel="noopener">Completar el formulario <span aria-hidden="true">↗</span></a>
+      <p class="fine">Se abre en Google Forms. Los datos los administra la Fundación Sembrando Esperanzas.</p>
+    </div>
+  </section>
+
+  <section class="ch" data-key="cierre" data-name="Contacto" id="aportes">
+    <div class="panel">
+      <h2>Hablemos.</h2>
+      <p class="lead">Para aportes al foro, prensa o cualquier consulta.</p>
+      <div class="contactos">
+        <div class="contacto"><span><span class="mono">Aportes y consultas</span><strong>conexia@sembrandoesperanzas.com.ar</strong></span><button class="copy" type="button" data-copy="conexia@sembrandoesperanzas.com.ar">Copiar</button></div>
+        <div class="contacto"><span><span class="mono">WhatsApp</span><strong>+54 9 2966 58-4067</strong></span><button class="copy" type="button" data-copy="+5492966584067">Copiar</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><span>ConexIA · Conexiones para la Industria Argentina</span><span>Convoca: Fundación Sembrando Esperanzas · Acompañan: Gobierno de Santa Cruz · Comisión de Industria, Cámara de Diputados de la Nación</span><a href="privacidad.html">Política de privacidad</a></footer>
+
+<aside class="ficha" id="ficha" role="dialog" aria-labelledby="fichaT" aria-hidden="true">
+  <button class="x" type="button" id="fichaX" aria-label="Cerrar ficha">×</button>
+  <span class="mono rol" id="fichaR"></span>
+  <h3 id="fichaT"></h3>
+  <p id="fichaD"></p>
+  <a id="fichaU" class="flink" href="#" target="_blank" rel="noopener" hidden>Visitar el sitio web ↗</a>
+</aside>
+
+<script>!function(t,i){"object"==typeof exports&&"undefined"!=typeof module?module.exports=i():"function"==typeof define&&define.amd?define(i):(t="undefined"!=typeof globalThis?globalThis:t||self).Lenis=i()}(this,(function(){"use strict";function clamp(t,i,e){return Math.max(t,Math.min(i,e))}class Animate{constructor(){this.isRunning=!1,this.value=0,this.from=0,this.to=0,this.currentTime=0}advance(t){var i;if(!this.isRunning)return;let e=!1;if(this.duration&&this.easing){this.currentTime+=t;const i=clamp(0,this.currentTime/this.duration,1);e=i>=1;const s=e?1:this.easing(i);this.value=this.from+(this.to-this.from)*s}else this.lerp?(this.value=function damp(t,i,e,s){return function lerp(t,i,e){return(1-e)*t+e*i}(t,i,1-Math.exp(-e*s))}(this.value,this.to,60*this.lerp,t),Math.round(this.value)===this.to&&(this.value=this.to,e=!0)):(this.value=this.to,e=!0);e&&this.stop(),null===(i=this.onUpdate)||void 0===i||i.call(this,this.value,e)}stop(){this.isRunning=!1}fromTo(t,i,{lerp:e,duration:s,easing:o,onStart:n,onUpdate:l}){this.from=this.value=t,this.to=i,this.lerp=e,this.duration=s,this.easing=o,this.currentTime=0,this.isRunning=!0,null==n||n(),this.onUpdate=l}}class Dimensions{constructor(t,i,{autoResize:e=!0,debounce:s=250}={}){this.wrapper=t,this.content=i,this.width=0,this.height=0,this.scrollHeight=0,this.scrollWidth=0,this.resize=()=>{this.onWrapperResize(),this.onContentResize()},this.onWrapperResize=()=>{this.wrapper instanceof Window?(this.width=window.innerWidth,this.height=window.innerHeight):(this.width=this.wrapper.clientWidth,this.height=this.wrapper.clientHeight)},this.onContentResize=()=>{this.wrapper instanceof Window?(this.scrollHeight=this.content.scrollHeight,this.scrollWidth=this.content.scrollWidth):(this.scrollHeight=this.wrapper.scrollHeight,this.scrollWidth=this.wrapper.scrollWidth)},e&&(this.debouncedResize=function debounce(t,i){let e;return function(...s){let o=this;clearTimeout(e),e=setTimeout((()=>{e=void 0,t.apply(o,s)}),i)}}(this.resize,s),this.wrapper instanceof Window?window.addEventListener("resize",this.debouncedResize,!1):(this.wrapperResizeObserver=new ResizeObserver(this.debouncedResize),this.wrapperResizeObserver.observe(this.wrapper)),this.contentResizeObserver=new ResizeObserver(this.debouncedResize),this.contentResizeObserver.observe(this.content)),this.resize()}destroy(){var t,i;null===(t=this.wrapperResizeObserver)||void 0===t||t.disconnect(),null===(i=this.contentResizeObserver)||void 0===i||i.disconnect(),this.wrapper===window&&this.debouncedResize&&window.removeEventListener("resize",this.debouncedResize,!1)}get limit(){return{x:this.scrollWidth-this.width,y:this.scrollHeight-this.height}}}class Emitter{constructor(){this.events={}}emit(t,...i){var e;let s=this.events[t]||[];for(let t=0,o=s.length;t<o;t++)null===(e=s[t])||void 0===e||e.call(s,...i)}on(t,i){var e;return(null===(e=this.events[t])||void 0===e?void 0:e.push(i))||(this.events[t]=[i]),()=>{var e;this.events[t]=null===(e=this.events[t])||void 0===e?void 0:e.filter((t=>i!==t))}}off(t,i){var e;this.events[t]=null===(e=this.events[t])||void 0===e?void 0:e.filter((t=>i!==t))}destroy(){this.events={}}}const t=100/6,i={passive:!1};class VirtualScroll{constructor(e,s={wheelMultiplier:1,touchMultiplier:1}){this.element=e,this.options=s,this.touchStart={x:0,y:0},this.lastDelta={x:0,y:0},this.window={width:0,height:0},this.emitter=new Emitter,this.onTouchStart=t=>{const{clientX:i,clientY:e}=t.targetTouches?t.targetTouches[0]:t;this.touchStart.x=i,this.touchStart.y=e,this.lastDelta={x:0,y:0},this.emitter.emit("scroll",{deltaX:0,deltaY:0,event:t})},this.onTouchMove=t=>{const{clientX:i,clientY:e}=t.targetTouches?t.targetTouches[0]:t,s=-(i-this.touchStart.x)*this.options.touchMultiplier,o=-(e-this.touchStart.y)*this.options.touchMultiplier;this.touchStart.x=i,this.touchStart.y=e,this.lastDelta={x:s,y:o},this.emitter.emit("scroll",{deltaX:s,deltaY:o,event:t})},this.onTouchEnd=t=>{this.emitter.emit("scroll",{deltaX:this.lastDelta.x,deltaY:this.lastDelta.y,event:t})},this.onWheel=i=>{let{deltaX:e,deltaY:s,deltaMode:o}=i;e*=1===o?t:2===o?this.window.width:1,s*=1===o?t:2===o?this.window.height:1,e*=this.options.wheelMultiplier,s*=this.options.wheelMultiplier,this.emitter.emit("scroll",{deltaX:e,deltaY:s,event:i})},this.onWindowResize=()=>{this.window={width:window.innerWidth,height:window.innerHeight}},window.addEventListener("resize",this.onWindowResize,!1),this.onWindowResize(),this.element.addEventListener("wheel",this.onWheel,i),this.element.addEventListener("touchstart",this.onTouchStart,i),this.element.addEventListener("touchmove",this.onTouchMove,i),this.element.addEventListener("touchend",this.onTouchEnd,i)}on(t,i){return this.emitter.on(t,i)}destroy(){this.emitter.destroy(),window.removeEventListener("resize",this.onWindowResize,!1),this.element.removeEventListener("wheel",this.onWheel,i),this.element.removeEventListener("touchstart",this.onTouchStart,i),this.element.removeEventListener("touchmove",this.onTouchMove,i),this.element.removeEventListener("touchend",this.onTouchEnd,i)}}return class Lenis{constructor({wrapper:t=window,content:i=document.documentElement,eventsTarget:e=t,smoothWheel:s=!0,syncTouch:o=!1,syncTouchLerp:n=.075,touchInertiaMultiplier:l=35,duration:r,easing:h=(t=>Math.min(1,1.001-Math.pow(2,-10*t))),lerp:a=.1,infinite:c=!1,orientation:u="vertical",gestureOrientation:d="vertical",touchMultiplier:p=1,wheelMultiplier:m=1,autoResize:v=!0,prevent:g,virtualScroll:S,__experimental__naiveDimensions:w=!1}={}){this._isScrolling=!1,this._isStopped=!1,this._isLocked=!1,this._preventNextNativeScrollEvent=!1,this._resetVelocityTimeout=null,this.time=0,this.userData={},this.lastVelocity=0,this.velocity=0,this.direction=0,this.animate=new Animate,this.emitter=new Emitter,this.onPointerDown=t=>{1===t.button&&this.reset()},this.onVirtualScroll=t=>{if("function"==typeof this.options.virtualScroll&&!1===this.options.virtualScroll(t))return;const{deltaX:i,deltaY:e,event:s}=t;if(this.emitter.emit("virtual-scroll",{deltaX:i,deltaY:e,event:s}),s.ctrlKey)return;const o=s.type.includes("touch"),n=s.type.includes("wheel");this.isTouching="touchstart"===s.type||"touchmove"===s.type;if(this.options.syncTouch&&o&&"touchstart"===s.type&&!this.isStopped&&!this.isLocked)return void this.reset();const l=0===i&&0===e,r="vertical"===this.options.gestureOrientation&&0===e||"horizontal"===this.options.gestureOrientation&&0===i;if(l||r)return;let h=s.composedPath();h=h.slice(0,h.indexOf(this.rootElement));const a=this.options.prevent;if(h.find((t=>{var i,e,s,l,r;return t instanceof HTMLElement&&("function"==typeof a&&(null==a?void 0:a(t))||(null===(i=t.hasAttribute)||void 0===i?void 0:i.call(t,"data-lenis-prevent"))||o&&(null===(e=t.hasAttribute)||void 0===e?void 0:e.call(t,"data-lenis-prevent-touch"))||n&&(null===(s=t.hasAttribute)||void 0===s?void 0:s.call(t,"data-lenis-prevent-wheel"))||(null===(l=t.classList)||void 0===l?void 0:l.contains("lenis"))&&!(null===(r=t.classList)||void 0===r?void 0:r.contains("lenis-stopped")))})))return;if(this.isStopped||this.isLocked)return void s.preventDefault();if(!(this.options.syncTouch&&o||this.options.smoothWheel&&n))return this.isScrolling="native",void this.animate.stop();s.preventDefault();let c=e;"both"===this.options.gestureOrientation?c=Math.abs(e)>Math.abs(i)?e:i:"horizontal"===this.options.gestureOrientation&&(c=i);const u=o&&this.options.syncTouch,d=o&&"touchend"===s.type&&Math.abs(c)>5;d&&(c=this.velocity*this.options.touchInertiaMultiplier),this.scrollTo(this.targetScroll+c,Object.assign({programmatic:!1},u?{lerp:d?this.options.syncTouchLerp:1}:{lerp:this.options.lerp,duration:this.options.duration,easing:this.options.easing}))},this.onNativeScroll=()=>{if(null!==this._resetVelocityTimeout&&(clearTimeout(this._resetVelocityTimeout),this._resetVelocityTimeout=null),this._preventNextNativeScrollEvent)this._preventNextNativeScrollEvent=!1;else if(!1===this.isScrolling||"native"===this.isScrolling){const t=this.animatedScroll;this.animatedScroll=this.targetScroll=this.actualScroll,this.lastVelocity=this.velocity,this.velocity=this.animatedScroll-t,this.direction=Math.sign(this.animatedScroll-t),this.isScrolling="native",this.emit(),0!==this.velocity&&(this._resetVelocityTimeout=setTimeout((()=>{this.lastVelocity=this.velocity,this.velocity=0,this.isScrolling=!1,this.emit()}),400))}},window.lenisVersion="1.1.13",t&&t!==document.documentElement&&t!==document.body||(t=window),this.options={wrapper:t,content:i,eventsTarget:e,smoothWheel:s,syncTouch:o,syncTouchLerp:n,touchInertiaMultiplier:l,duration:r,easing:h,lerp:a,infinite:c,gestureOrientation:d,orientation:u,touchMultiplier:p,wheelMultiplier:m,autoResize:v,prevent:g,virtualScroll:S,__experimental__naiveDimensions:w},this.dimensions=new Dimensions(t,i,{autoResize:v}),this.updateClassName(),this.targetScroll=this.animatedScroll=this.actualScroll,this.options.wrapper.addEventListener("scroll",this.onNativeScroll,!1),this.options.wrapper.addEventListener("pointerdown",this.onPointerDown,!1),this.virtualScroll=new VirtualScroll(e,{touchMultiplier:p,wheelMultiplier:m}),this.virtualScroll.on("scroll",this.onVirtualScroll)}destroy(){this.emitter.destroy(),this.options.wrapper.removeEventListener("scroll",this.onNativeScroll,!1),this.options.wrapper.removeEventListener("pointerdown",this.onPointerDown,!1),this.virtualScroll.destroy(),this.dimensions.destroy(),this.cleanUpClassName()}on(t,i){return this.emitter.on(t,i)}off(t,i){return this.emitter.off(t,i)}setScroll(t){this.isHorizontal?this.rootElement.scrollLeft=t:this.rootElement.scrollTop=t}resize(){this.dimensions.resize(),this.animatedScroll=this.targetScroll=this.actualScroll,this.emit()}emit(){this.emitter.emit("scroll",this)}reset(){this.isLocked=!1,this.isScrolling=!1,this.animatedScroll=this.targetScroll=this.actualScroll,this.lastVelocity=this.velocity=0,this.animate.stop()}start(){this.isStopped&&(this.isStopped=!1,this.reset())}stop(){this.isStopped||(this.isStopped=!0,this.animate.stop(),this.reset())}raf(t){const i=t-(this.time||t);this.time=t,this.animate.advance(.001*i)}scrollTo(t,{offset:i=0,immediate:e=!1,lock:s=!1,duration:o=this.options.duration,easing:n=this.options.easing,lerp:l=this.options.lerp,onStart:r,onComplete:h,force:a=!1,programmatic:c=!0,userData:u}={}){if(!this.isStopped&&!this.isLocked||a){if("string"==typeof t&&["top","left","start"].includes(t))t=0;else if("string"==typeof t&&["bottom","right","end"].includes(t))t=this.limit;else{let e;if("string"==typeof t?e=document.querySelector(t):t instanceof HTMLElement&&(null==t?void 0:t.nodeType)&&(e=t),e){if(this.options.wrapper!==window){const t=this.rootElement.getBoundingClientRect();i-=this.isHorizontal?t.left:t.top}const s=e.getBoundingClientRect();t=(this.isHorizontal?s.left:s.top)+this.animatedScroll}}if("number"==typeof t){if(t+=i,t=Math.round(t),this.options.infinite?c&&(this.targetScroll=this.animatedScroll=this.scroll):t=clamp(0,t,this.limit),t===this.targetScroll)return null==r||r(this),void(null==h||h(this));if(this.userData=null!=u?u:{},e)return this.animatedScroll=this.targetScroll=t,this.setScroll(this.scroll),this.reset(),this.preventNextNativeScrollEvent(),this.emit(),null==h||h(this),void(this.userData={});c||(this.targetScroll=t),this.animate.fromTo(this.animatedScroll,t,{duration:o,easing:n,lerp:l,onStart:()=>{s&&(this.isLocked=!0),this.isScrolling="smooth",null==r||r(this)},onUpdate:(t,i)=>{this.isScrolling="smooth",this.lastVelocity=this.velocity,this.velocity=t-this.animatedScroll,this.direction=Math.sign(this.velocity),this.animatedScroll=t,this.setScroll(this.scroll),c&&(this.targetScroll=t),i||this.emit(),i&&(this.reset(),this.emit(),null==h||h(this),this.userData={},this.preventNextNativeScrollEvent())}})}}}preventNextNativeScrollEvent(){this._preventNextNativeScrollEvent=!0,requestAnimationFrame((()=>{this._preventNextNativeScrollEvent=!1}))}get rootElement(){return this.options.wrapper===window?document.documentElement:this.options.wrapper}get limit(){return this.options.__experimental__naiveDimensions?this.isHorizontal?this.rootElement.scrollWidth-this.rootElement.clientWidth:this.rootElement.scrollHeight-this.rootElement.clientHeight:this.dimensions.limit[this.isHorizontal?"x":"y"]}get isHorizontal(){return"horizontal"===this.options.orientation}get actualScroll(){return this.isHorizontal?this.rootElement.scrollLeft:this.rootElement.scrollTop}get scroll(){return this.options.infinite?function modulo(t,i){return(t%i+i)%i}(this.animatedScroll,this.limit):this.animatedScroll}get progress(){return 0===this.limit?1:this.scroll/this.limit}get isScrolling(){return this._isScrolling}set isScrolling(t){this._isScrolling!==t&&(this._isScrolling=t,this.updateClassName())}get isStopped(){return this._isStopped}set isStopped(t){this._isStopped!==t&&(this._isStopped=t,this.updateClassName())}get isLocked(){return this._isLocked}set isLocked(t){this._isLocked!==t&&(this._isLocked=t,this.updateClassName())}get isSmooth(){return"smooth"===this.isScrolling}get className(){let t="lenis";return this.isStopped&&(t+=" lenis-stopped"),this.isLocked&&(t+=" lenis-locked"),this.isScrolling&&(t+=" lenis-scrolling"),"smooth"===this.isScrolling&&(t+=" lenis-smooth"),t}updateClassName(){this.cleanUpClassName(),this.rootElement.className=`${this.rootElement.className} ${this.className}`.trim()}cleanUpClassName(){this.rootElement.className=this.rootElement.className.replace(/lenis(-\w+)?/g,"").trim()}}}));
+
+</script>
+<script>
+(() => {
+const HEX = {"R":9.2,"cells":[[167,69,0],[183,69,0],[199,69,0],[247,69,0],[263,69,0],[279,69,0],[143,83,0],[159,83,0],[175,83,0],[191,83,0],[207,83,0],[223,83,0],[239,83,0],[255,83,0],[271,83,0],[287,83,0],[135,97,0],[151,97,0],[167,97,0],[183,97,0],[199,97,0],[215,97,0],[231,97,0],[247,97,0],[263,97,0],[279,97,0],[295,97,0],[143,110,0],[159,110,0],[175,110,0],[191,110,0],[207,110,0],[223,110,0],[239,110,0],[255,110,0],[271,110,0],[287,110,0],[303,110,0],[319,110,0],[135,124,0],[151,124,0],[167,124,0],[183,124,0],[199,124,0],[215,124,0],[231,124,0],[247,124,0],[263,124,0],[279,124,0],[295,124,0],[311,124,0],[327,124,0],[127,138,0],[143,138,0],[159,138,0],[175,138,0],[191,138,0],[207,138,0],[223,138,0],[239,138,0],[255,138,0],[271,138,0],[287,138,0],[303,138,0],[319,138,0],[335,138,0],[351,138,0],[120,152,0],[135,152,0],[151,152,0],[167,152,0],[183,152,0],[199,152,0],[215,152,0],[231,152,0],[247,152,0],[263,152,0],[279,152,0],[295,152,0],[311,152,0],[327,152,0],[343,152,0],[359,152,0],[374,152,0],[390,152,0],[96,166,0],[112,166,0],[127,166,0],[143,166,0],[159,166,0],[175,166,0],[191,166,0],[207,166,0],[223,166,0],[239,166,0],[255,166,0],[271,166,0],[287,166,0],[303,166,0],[319,166,0],[335,166,0],[351,166,0],[367,166,0],[382,166,0],[398,166,0],[88,179,0],[104,179,0],[120,179,0],[135,179,0],[151,179,0],[167,179,0],[183,179,0],[199,179,0],[215,179,0],[231,179,0],[247,179,0],[263,179,0],[279,179,0],[295,179,0],[311,179,0],[327,179,0],[343,179,0],[359,179,0],[374,179,0],[390,179,0],[406,179,0],[422,179,0],[96,193,0],[112,193,0],[127,193,0],[143,193,0],[159,193,0],[175,193,0],[191,193,0],[207,193,0],[223,193,0],[239,193,0],[255,193,0],[271,193,0],[287,193,0],[303,193,0],[319,193,0],[335,193,0],[351,193,0],[367,193,0],[382,193,0],[398,193,0],[414,193,0],[430,193,0],[446,193,0],[88,207,0],[104,207,0],[120,207,0],[135,207,0],[151,207,0],[167,207,0],[183,207,0],[199,207,0],[215,207,0],[231,207,0],[247,207,0],[263,207,0],[279,207,0],[295,207,0],[311,207,0],[327,207,0],[343,207,0],[359,207,0],[374,207,0],[390,207,0],[406,207,0],[422,207,0],[438,207,0],[454,207,0],[96,221,0],[112,221,0],[127,221,0],[143,221,0],[159,221,0],[175,221,0],[191,221,0],[207,221,0],[223,221,0],[239,221,0],[255,221,0],[271,221,0],[287,221,0],[303,221,0],[319,221,0],[335,221,0],[351,221,0],[367,221,0],[382,221,0],[398,221,0],[414,221,0],[430,221,0],[446,221,0],[574,221,0],[590,221,0],[88,235,0],[104,235,0],[120,235,0],[135,235,0],[151,235,0],[167,235,0],[183,235,0],[199,235,0],[215,235,0],[231,235,0],[247,235,0],[263,235,0],[279,235,0],[295,235,0],[311,235,0],[327,235,0],[343,235,0],[359,235,0],[374,235,0],[390,235,0],[406,235,0],[422,235,0],[438,235,0],[582,235,0],[96,248,0],[112,248,0],[127,248,0],[143,248,0],[159,248,0],[175,248,0],[191,248,0],[207,248,0],[223,248,0],[239,248,0],[255,248,0],[271,248,0],[287,248,0],[303,248,0],[319,248,0],[335,248,0],[351,248,0],[367,248,0],[382,248,0],[398,248,0],[414,248,0],[430,248,0],[574,248,0],[590,248,0],[88,262,0],[104,262,0],[120,262,0],[135,262,0],[151,262,0],[167,262,0],[183,262,0],[199,262,0],[215,262,0],[231,262,0],[247,262,0],[263,262,0],[279,262,0],[295,262,0],[311,262,0],[327,262,0],[343,262,0],[359,262,0],[374,262,0],[390,262,0],[406,262,0],[422,262,0],[550,262,0],[566,262,0],[582,262,0],[80,276,0],[96,276,0],[112,276,0],[127,276,0],[143,276,0],[159,276,0],[175,276,0],[191,276,0],[207,276,0],[223,276,0],[239,276,0],[255,276,0],[271,276,0],[287,276,0],[303,276,0],[319,276,0],[335,276,0],[351,276,0],[367,276,0],[382,276,0],[398,276,0],[414,276,0],[430,276,0],[446,276,0],[542,276,0],[558,276,0],[574,276,0],[590,276,0],[72,290,0],[88,290,0],[104,290,0],[120,290,0],[135,290,0],[151,290,0],[167,290,0],[183,290,0],[199,290,0],[215,290,0],[231,290,0],[247,290,0],[263,290,0],[279,290,0],[295,290,0],[311,290,0],[327,290,0],[343,290,0],[359,290,0],[374,290,0],[390,290,0],[406,290,0],[422,290,0],[438,290,0],[454,290,0],[470,290,0],[486,290,0],[502,290,0],[518,290,0],[534,290,0],[550,290,0],[64,304,0],[80,304,0],[96,304,0],[112,304,0],[127,304,0],[143,304,0],[159,304,0],[175,304,0],[191,304,0],[207,304,0],[223,304,0],[239,304,0],[255,304,0],[271,304,0],[287,304,0],[303,304,0],[319,304,0],[335,304,0],[351,304,0],[367,304,0],[382,304,0],[398,304,0],[414,304,0],[430,304,0],[446,304,0],[462,304,0],[478,304,0],[494,304,0],[510,304,0],[526,304,0],[56,317,0],[72,317,0],[88,317,0],[104,317,0],[120,317,0],[135,317,0],[151,317,0],[167,317,0],[183,317,0],[199,317,0],[215,317,0],[231,317,0],[247,317,0],[263,317,0],[279,317,0],[295,317,0],[311,317,0],[327,317,0],[343,317,0],[359,317,0],[374,317,0],[390,317,0],[406,317,0],[422,317,0],[438,317,0],[454,317,0],[470,317,0],[486,317,0],[502,317,0],[518,317,0],[48,331,0],[64,331,0],[80,331,0],[96,331,0],[112,331,0],[127,331,0],[143,331,0],[159,331,0],[175,331,0],[191,331,0],[207,331,0],[223,331,0],[239,331,0],[255,331,0],[271,331,0],[287,331,0],[303,331,0],[319,331,0],[335,331,0],[351,331,0],[367,331,0],[382,331,0],[398,331,0],[414,331,0],[430,331,0],[446,331,0],[462,331,0],[478,331,0],[494,331,0],[56,345,0],[72,345,0],[88,345,0],[104,345,0],[120,345,0],[135,345,0],[151,345,0],[167,345,0],[183,345,0],[199,345,0],[215,345,0],[231,345,0],[247,345,0],[263,345,0],[279,345,0],[295,345,0],[311,345,0],[327,345,0],[343,345,0],[359,345,0],[374,345,0],[390,345,0],[406,345,0],[422,345,0],[438,345,0],[454,345,0],[470,345,0],[486,345,0],[48,359,0],[64,359,0],[80,359,0],[96,359,0],[112,359,0],[127,359,0],[143,359,0],[159,359,0],[175,359,0],[191,359,0],[207,359,0],[223,359,0],[239,359,0],[255,359,0],[271,359,0],[287,359,0],[303,359,0],[319,359,0],[335,359,0],[351,359,0],[367,359,0],[382,359,0],[398,359,0],[414,359,0],[430,359,0],[446,359,0],[462,359,0],[478,359,0],[56,373,0],[72,373,0],[88,373,0],[104,373,0],[120,373,0],[135,373,0],[151,373,0],[167,373,0],[183,373,0],[199,373,0],[215,373,0],[231,373,0],[247,373,0],[263,373,0],[279,373,0],[295,373,0],[311,373,0],[327,373,0],[343,373,0],[359,373,0],[374,373,0],[390,373,0],[406,373,0],[422,373,0],[438,373,0],[454,373,0],[48,386,0],[64,386,0],[80,386,0],[96,386,0],[112,386,0],[127,386,0],[143,386,0],[159,386,0],[175,386,0],[191,386,0],[207,386,0],[223,386,0],[239,386,0],[255,386,0],[271,386,0],[287,386,0],[303,386,0],[319,386,0],[335,386,0],[351,386,0],[367,386,0],[382,386,0],[398,386,0],[414,386,0],[430,386,0],[446,386,0],[40,400,0],[56,400,0],[72,400,0],[88,400,0],[104,400,0],[120,400,0],[135,400,0],[151,400,0],[167,400,0],[183,400,0],[199,400,0],[215,400,0],[231,400,0],[247,400,0],[263,400,0],[279,400,0],[295,400,0],[311,400,0],[327,400,0],[343,400,0],[359,400,0],[374,400,0],[390,400,0],[406,400,0],[422,400,0],[438,400,0],[32,414,0],[48,414,0],[64,414,0],[80,414,0],[96,414,0],[112,414,0],[127,414,0],[143,414,0],[159,414,0],[175,414,0],[191,414,0],[207,414,0],[223,414,0],[239,414,0],[255,414,0],[271,414,0],[287,414,0],[303,414,0],[319,414,0],[335,414,0],[351,414,0],[367,414,0],[382,414,0],[398,414,0],[414,414,0],[430,414,0],[24,428,0],[40,428,0],[56,428,0],[72,428,0],[88,428,0],[104,428,0],[120,428,0],[135,428,0],[151,428,0],[167,428,0],[183,428,0],[199,428,0],[215,428,0],[231,428,0],[247,428,0],[263,428,0],[279,428,0],[295,428,0],[311,428,0],[327,428,0],[343,428,0],[359,428,0],[374,428,0],[390,428,0],[406,428,0],[422,428,0],[438,428,0],[32,442,0],[48,442,0],[64,442,0],[80,442,0],[96,442,0],[112,442,0],[127,442,0],[143,442,0],[159,442,0],[175,442,0],[191,442,0],[207,442,0],[223,442,0],[239,442,0],[255,442,0],[271,442,0],[287,442,0],[303,442,0],[319,442,0],[335,442,0],[351,442,0],[367,442,0],[382,442,0],[398,442,0],[414,442,0],[430,442,0],[40,455,0],[56,455,0],[72,455,0],[88,455,0],[104,455,0],[120,455,0],[135,455,0],[151,455,0],[167,455,0],[183,455,0],[199,455,0],[215,455,0],[231,455,0],[247,455,0],[263,455,0],[279,455,0],[295,455,0],[311,455,0],[327,455,0],[343,455,0],[359,455,0],[374,455,0],[390,455,0],[406,455,0],[422,455,0],[48,469,0],[64,469,0],[80,469,0],[96,469,0],[112,469,0],[127,469,0],[143,469,0],[159,469,0],[175,469,0],[191,469,0],[207,469,0],[223,469,0],[239,469,0],[255,469,0],[271,469,0],[287,469,0],[303,469,0],[319,469,0],[335,469,0],[351,469,0],[367,469,0],[382,469,0],[398,469,0],[414,469,0],[430,469,0],[40,483,0],[56,483,0],[72,483,0],[88,483,0],[104,483,0],[120,483,0],[135,483,0],[151,483,0],[167,483,0],[183,483,0],[199,483,0],[215,483,0],[231,483,0],[247,483,0],[263,483,0],[279,483,0],[295,483,0],[311,483,0],[327,483,0],[343,483,0],[359,483,0],[374,483,0],[390,483,0],[406,483,0],[422,483,0],[48,497,0],[64,497,0],[80,497,0],[96,497,0],[112,497,0],[127,497,0],[143,497,0],[159,497,0],[175,497,0],[191,497,0],[207,497,0],[223,497,0],[239,497,0],[255,497,0],[271,497,0],[287,497,0],[303,497,0],[319,497,0],[335,497,0],[351,497,0],[367,497,0],[382,497,0],[398,497,0],[414,497,0],[56,511,0],[72,511,0],[88,511,0],[104,511,0],[120,511,0],[135,511,0],[151,511,0],[167,511,0],[183,511,0],[199,511,0],[215,511,0],[231,511,0],[247,511,0],[263,511,0],[279,511,0],[295,511,0],[311,511,0],[327,511,0],[343,511,0],[359,511,0],[374,511,0],[390,511,0],[406,511,0],[64,524,0],[80,524,0],[96,524,0],[112,524,0],[127,524,0],[143,524,0],[159,524,0],[175,524,0],[191,524,0],[207,524,0],[223,524,0],[239,524,0],[255,524,0],[271,524,0],[287,524,0],[303,524,0],[319,524,0],[335,524,0],[351,524,0],[367,524,0],[382,524,0],[398,524,0],[414,524,0],[56,538,0],[72,538,0],[88,538,0],[104,538,0],[120,538,0],[135,538,0],[151,538,0],[167,538,0],[183,538,0],[199,538,0],[215,538,0],[231,538,0],[247,538,0],[263,538,0],[279,538,0],[295,538,0],[311,538,0],[327,538,0],[343,538,0],[359,538,0],[374,538,0],[390,538,0],[406,538,0],[48,552,0],[64,552,0],[80,552,0],[96,552,0],[112,552,0],[127,552,0],[143,552,0],[159,552,0],[175,552,0],[191,552,0],[207,552,0],[223,552,0],[239,552,0],[255,552,0],[271,552,0],[287,552,0],[303,552,0],[319,552,0],[335,552,0],[351,552,0],[367,552,0],[382,552,0],[398,552,0],[414,552,0],[56,566,0],[72,566,0],[88,566,0],[104,566,0],[120,566,0],[135,566,0],[151,566,0],[167,566,0],[183,566,0],[199,566,0],[215,566,0],[231,566,0],[247,566,0],[263,566,0],[279,566,0],[295,566,0],[311,566,0],[327,566,0],[343,566,0],[359,566,0],[374,566,0],[390,566,0],[406,566,0],[422,566,0],[48,580,0],[64,580,0],[80,580,0],[96,580,0],[112,580,0],[127,580,0],[143,580,0],[159,580,0],[175,580,0],[191,580,0],[207,580,0],[223,580,0],[239,580,0],[255,580,0],[271,580,0],[287,580,0],[303,580,0],[319,580,0],[335,580,0],[351,580,0],[367,580,0],[382,580,0],[398,580,0],[414,580,0],[430,580,0],[446,580,0],[40,593,0],[56,593,0],[72,593,0],[88,593,0],[104,593,0],[120,593,0],[135,593,0],[151,593,0],[167,593,0],[183,593,0],[199,593,0],[215,593,0],[231,593,0],[247,593,0],[263,593,0],[279,593,0],[295,593,0],[311,593,0],[327,593,0],[343,593,0],[359,593,0],[374,593,0],[390,593,0],[406,593,0],[422,593,0],[438,593,0],[454,593,0],[48,607,0],[64,607,0],[80,607,0],[96,607,0],[112,607,0],[127,607,0],[143,607,0],[159,607,0],[175,607,0],[191,607,0],[207,607,0],[223,607,0],[239,607,0],[255,607,0],[271,607,0],[287,607,0],[303,607,0],[319,607,0],[335,607,0],[351,607,0],[367,607,0],[382,607,0],[398,607,0],[414,607,0],[430,607,0],[446,607,0],[40,621,0],[56,621,0],[72,621,0],[88,621,0],[104,621,0],[120,621,0],[135,621,0],[151,621,0],[167,621,0],[183,621,0],[199,621,0],[215,621,0],[231,621,0],[247,621,0],[263,621,0],[279,621,0],[295,621,0],[311,621,0],[327,621,0],[343,621,0],[359,621,0],[374,621,0],[390,621,0],[406,621,0],[422,621,0],[438,621,0],[32,635,0],[48,635,0],[64,635,0],[80,635,0],[96,635,0],[112,635,0],[127,635,0],[143,635,0],[159,635,0],[175,635,0],[191,635,0],[207,635,0],[223,635,0],[239,635,0],[255,635,0],[271,635,0],[287,635,0],[303,635,0],[319,635,0],[335,635,0],[351,635,0],[367,635,0],[382,635,0],[398,635,0],[414,635,0],[430,635,0],[446,635,0],[462,635,0],[24,649,0],[40,649,0],[56,649,0],[72,649,0],[88,649,0],[104,649,0],[120,649,0],[135,649,0],[151,649,0],[167,649,0],[183,649,0],[199,649,0],[215,649,0],[231,649,0],[247,649,0],[263,649,0],[279,649,0],[295,649,0],[311,649,0],[327,649,0],[343,649,0],[359,649,0],[374,649,0],[390,649,0],[406,649,0],[422,649,0],[438,649,0],[454,649,0],[32,662,0],[48,662,0],[64,662,0],[80,662,0],[96,662,0],[112,662,0],[127,662,0],[143,662,0],[159,662,0],[175,662,0],[191,662,0],[207,662,0],[223,662,0],[239,662,0],[255,662,0],[271,662,0],[287,662,0],[303,662,0],[319,662,0],[335,662,0],[351,662,0],[367,662,0],[382,662,0],[398,662,0],[414,662,0],[430,662,0],[446,662,0],[24,676,0],[40,676,0],[56,676,0],[72,676,0],[88,676,0],[104,676,0],[120,676,0],[135,676,0],[151,676,0],[167,676,0],[183,676,0],[199,676,0],[215,676,0],[231,676,0],[247,676,0],[263,676,0],[279,676,0],[295,676,0],[311,676,0],[327,676,0],[343,676,0],[359,676,0],[374,676,0],[390,676,0],[406,676,0],[422,676,0],[438,676,0],[32,690,0],[48,690,0],[64,690,0],[80,690,0],[96,690,0],[112,690,0],[127,690,0],[143,690,0],[159,690,0],[175,690,0],[191,690,0],[207,690,0],[223,690,0],[239,690,0],[255,690,0],[271,690,0],[287,690,0],[303,690,0],[319,690,0],[335,690,0],[351,690,0],[367,690,0],[382,690,0],[398,690,0],[414,690,0],[430,690,0],[40,704,0],[56,704,0],[72,704,0],[88,704,0],[104,704,0],[120,704,0],[135,704,0],[151,704,0],[167,704,0],[183,704,0],[199,704,0],[215,704,0],[231,704,0],[247,704,0],[263,704,0],[279,704,0],[295,704,0],[311,704,0],[327,704,0],[343,704,0],[359,704,0],[374,704,0],[390,704,0],[406,704,0],[32,718,0],[48,718,0],[64,718,0],[80,718,0],[96,718,0],[112,718,0],[127,718,0],[143,718,0],[159,718,0],[175,718,0],[191,718,0],[207,718,0],[223,718,0],[239,718,0],[255,718,0],[271,718,0],[287,718,0],[303,718,0],[319,718,0],[335,718,0],[351,718,0],[367,718,0],[24,731,0],[40,731,0],[56,731,0],[72,731,0],[88,731,0],[104,731,0],[120,731,0],[135,731,0],[151,731,0],[167,731,0],[183,731,0],[199,731,0],[215,731,0],[231,731,0],[247,731,0],[263,731,0],[279,731,0],[32,745,0],[48,745,0],[64,745,0],[80,745,0],[96,745,0],[112,745,0],[127,745,0],[143,745,0],[159,745,0],[175,745,0],[191,745,0],[207,745,0],[223,745,0],[239,745,0],[255,745,0],[271,745,0],[287,745,0],[24,759,0],[40,759,0],[56,759,0],[72,759,0],[88,759,0],[104,759,0],[120,759,0],[135,759,0],[151,759,0],[167,759,0],[183,759,0],[199,759,0],[215,759,0],[231,759,0],[247,759,0],[263,759,0],[279,759,0],[16,773,0],[32,773,0],[48,773,0],[64,773,0],[80,773,0],[96,773,0],[112,773,0],[127,773,0],[143,773,0],[159,773,0],[175,773,0],[191,773,0],[207,773,0],[223,773,0],[239,773,0],[255,773,0],[271,773,0],[287,773,0],[24,787,0],[40,787,0],[56,787,0],[72,787,0],[88,787,0],[104,787,0],[120,787,0],[135,787,0],[151,787,0],[167,787,0],[183,787,0],[199,787,0],[215,787,0],[231,787,0],[247,787,0],[263,787,0],[279,787,0],[16,800,0],[32,800,0],[48,800,0],[64,800,0],[80,800,0],[96,800,0],[112,800,0],[127,800,0],[143,800,0],[159,800,0],[175,800,0],[191,800,0],[239,800,0],[255,800,0],[271,800,0],[24,814,0],[40,814,0],[56,814,0],[72,814,0],[88,814,0],[104,814,0],[120,814,0],[135,814,0],[151,814,0],[167,814,0],[183,814,0],[199,814,0],[16,828,0],[32,828,0],[48,828,0],[64,828,0],[80,828,0],[96,828,0],[112,828,0],[127,828,0],[143,828,0],[159,828,0],[175,828,0],[191,828,0],[207,828,0],[24,842,0],[40,842,0],[56,842,0],[72,842,0],[88,842,0],[104,842,0],[120,842,0],[135,842,0],[151,842,0],[167,842,0],[183,842,0],[199,842,0],[16,856,0],[32,856,0],[48,856,0],[64,856,0],[80,856,0],[96,856,0],[112,856,0],[127,856,0],[143,856,0],[159,856,0],[175,856,0],[191,856,0],[207,856,0],[223,856,0],[239,856,0],[24,869,0],[40,869,0],[56,869,0],[72,869,0],[88,869,0],[104,869,0],[120,869,0],[135,869,0],[151,869,0],[167,869,0],[183,869,0],[199,869,0],[247,869,0],[16,883,0],[32,883,0],[48,883,0],[64,883,0],[80,883,0],[96,883,0],[112,883,0],[127,883,0],[143,883,0],[159,883,0],[175,883,0],[191,883,0],[207,883,0],[24,897,0],[40,897,0],[56,897,0],[72,897,0],[88,897,0],[104,897,0],[120,897,0],[135,897,0],[151,897,0],[167,897,0],[183,897,0],[199,897,0],[32,911,0],[48,911,0],[64,911,0],[80,911,0],[96,911,0],[112,911,0],[127,911,0],[143,911,0],[159,911,0],[175,911,0],[191,911,0],[40,925,0],[56,925,0],[72,925,0],[88,925,0],[104,925,0],[120,925,0],[135,925,0],[151,925,0],[167,925,0],[183,925,0],[199,925,0],[32,938,0],[48,938,0],[64,938,0],[80,938,0],[96,938,0],[112,938,0],[127,938,0],[143,938,0],[159,938,0],[175,938,0],[191,938,0],[56,952,0],[72,952,0],[88,952,0],[104,952,0],[120,952,0],[135,952,0],[151,952,0],[167,952,0],[183,952,0],[48,966,0],[64,966,0],[80,966,0],[96,966,0],[112,966,0],[127,966,0],[143,966,0],[159,966,0],[40,980,0],[56,980,0],[72,980,0],[88,980,0],[104,980,0],[120,980,0],[135,980,0],[32,994,0],[48,994,0],[64,994,0],[80,994,0],[96,994,0],[112,994,0],[127,994,0],[143,994,0],[40,1007,1],[56,1007,1],[72,1007,1],[88,1007,1],[104,1007,1],[120,1007,1],[135,1007,1],[48,1021,1],[64,1021,1],[80,1021,1],[96,1021,1],[112,1021,1],[127,1021,1],[143,1021,1],[40,1035,1],[56,1035,1],[72,1035,1],[88,1035,1],[104,1035,1],[120,1035,1],[135,1035,1],[151,1035,1],[167,1035,1],[48,1049,1],[64,1049,1],[80,1049,1],[96,1049,1],[112,1049,1],[127,1049,1],[143,1049,1],[159,1049,1],[175,1049,1],[191,1049,1],[24,1063,1],[40,1063,1],[56,1063,1],[72,1063,1],[88,1063,1],[104,1063,1],[120,1063,1],[135,1063,1],[151,1063,1],[167,1063,1],[183,1063,1],[32,1076,1],[48,1076,1],[64,1076,1],[80,1076,1],[96,1076,1],[112,1076,1],[127,1076,1],[143,1076,1],[159,1076,1],[175,1076,1],[40,1090,1],[56,1090,1],[72,1090,1],[88,1090,1],[104,1090,1],[120,1090,1],[135,1090,1],[151,1090,1],[167,1090,1],[32,1104,1],[48,1104,1],[64,1104,1],[80,1104,1],[96,1104,1],[112,1104,1],[127,1104,1],[143,1104,1],[24,1118,1],[40,1118,1],[56,1118,1],[72,1118,1],[88,1118,1],[104,1118,1],[120,1118,1],[135,1118,1],[16,1132,1],[32,1132,1],[48,1132,1],[64,1132,1],[80,1132,1],[96,1132,1],[112,1132,1],[127,1132,1],[143,1132,1],[8,1145,1],[24,1145,1],[40,1145,1],[56,1145,1],[72,1145,1],[88,1145,1],[104,1145,1],[120,1145,1],[135,1145,1],[16,1159,1],[32,1159,1],[48,1159,1],[64,1159,1],[80,1159,1],[96,1159,1],[112,1159,1],[127,1159,1],[24,1173,1],[40,1173,1],[56,1173,1],[72,1173,1],[88,1173,1],[104,1173,1],[16,1187,1],[48,1187,1],[64,1187,1],[80,1187,1],[96,1187,1],[112,1187,1],[40,1201,1],[56,1201,1],[72,1201,1],[88,1201,1],[104,1201,1],[48,1214,1],[64,1214,1],[80,1214,1],[96,1214,1],[112,1214,1],[335,1214,2],[367,1214,2],[382,1214,2],[56,1228,1],[72,1228,1],[88,1228,1],[104,1228,1],[120,1228,1],[327,1228,2],[359,1228,2],[135,1283,0],[143,1297,0],[135,1311,0],[151,1311,0],[167,1311,0],[143,1325,0],[159,1325,0],[175,1325,0],[191,1325,0],[167,1339,0],[183,1339,0]],"rg":[115,1215],"prov":{"Buenos Aires":[432,570],"CABA":[419,556],"Catamarca":[180,315],"Chaco":[413,278],"Chubut":[209,888],"Córdoba":[234,428],"Corrientes":[418,279],"Entre Ríos":[355,442],"Formosa":[443,230],"Jujuy":[194,149],"La Pampa":[231,630],"La Rioja":[144,352],"Mendoza":[83,489],"Misiones":[519,281],"Neuquén":[118,723],"Río Negro":[269,792],"Salta":[191,172],"San Juan":[90,436],"San Luis":[164,502],"Santa Cruz":[115,1215],"Santa Fe":[349,438],"Santiago del Estero":[231,288],"Tierra del Fuego":[144,1336],"Tucumán":[198,251]},"c":[240,683],"k":2217.72,"city":{"Río Gallegos":[115,1215],"Caleta Olivia":[146,1012],"El Calafate":[36,1172],"Perito Moreno":[56,1024],"CABA":[419,556],"Neuquén":[118,723]}};
+const GLOBE = [[-37.2,83.5],[-69.7,83.1],[-82.1,82.1],[-29.5,81.9],[-62,81.6],[-41.9,81.1],[95.6,81],[-74.4,80.8],[-21.9,80.6],[-54.3,80.3],[-34.3,79.8],[18.3,79.7],[-46.7,79.2],[-79.1,78.9],[-26.6,78.8],[-111.6,78.7],[-59.1,78.5],[-91.5,78.3],[-39,78.1],[13.5,78],[-71.5,77.9],[-51.4,77.6],[-83.9,77.3],[-31.3,77.2],[-116.3,77.1],[-63.8,77],[-96.3,76.8],[-43.7,76.7],[-23.7,76.3],[-108.7,76.2],[-56.1,76.1],[-36.1,75.8],[101.4,75.8],[-48.5,75.3],[89,75.3],[141.6,75.2],[-80.9,75.1],[56.6,75.1],[-28.4,75],[109.1,75],[-40.8,74.5],[96.7,74.5],[-20.8,74.3],[-53.2,74.1],[-33.2,73.8],[104.4,73.8],[-118.1,73.7],[124.4,73.5],[-98.1,73.5],[-45.6,73.4],[92,73.3],[-78,73.2],[-25.5,73.1],[112,73.1],[-37.9,72.7],[99.6,72.6],[-122.9,72.6],[119.7,72.4],[-50.3,72.3],[87.2,72.2],[139.7,72.1],[-82.7,72.1],[54.8,72.1],[-30.2,72],[107.3,72],[-115.2,72],[74.8,71.8],[127.3,71.7],[-95.1,71.7],[-42.6,71.6],[94.9,71.6],[147.4,71.5],[-75.1,71.5],[-22.6,71.4],[114.9,71.4],[-107.5,71.3],[82.5,71.2],[135,71.1],[-87.5,71.1],[-35,71],[102.5,71],[155.1,70.9],[70.1,70.8],[-152.4,70.8],[122.6,70.7],[-47.4,70.6],[90.1,70.6],[142.7,70.5],[-79.8,70.5],[-27.3,70.4],[110.2,70.4],[-112.3,70.3],[25.2,70.3],[77.7,70.2],[130.3,70.1],[-92.2,70.1],[-39.7,70],[97.8,70],[-124.7,70],[150.3,69.9],[-72.2,69.9],[-157.1,69.8],[117.9,69.8],[-104.6,69.7],[170.4,69.7],[-52.1,69.7],[85.4,69.6],[137.9,69.6],[-84.6,69.5],[-32,69.4],[105.5,69.4],[20.5,69.4],[158,69.3],[-149.5,69.3],[125.5,69.2],[-97,69.2],[178.1,69.1],[-44.4,69.1],[93.1,69.1],[-129.4,69],[145.6,69],[-161.9,68.9],[113.1,68.9],[-109.4,68.8],[28.2,68.8],[165.7,68.8],[80.7,68.7],[-141.8,68.7],[133.2,68.6],[-89.3,68.6],[-36.8,68.5],[100.7,68.5],[-121.8,68.5],[153.3,68.4],[-69.2,68.4],[-154.2,68.4],[120.8,68.3],[35.8,68.3],[173.3,68.2],[-49.2,68.2],[88.3,68.2],[-134.2,68.1],[140.9,68.1],[55.9,68],[108.4,68],[23.4,67.9],[160.9,67.9],[75.9,67.8],[-146.6,67.8],[128.5,67.8],[-94,67.7],[-179,67.7],[-41.5,67.7],[96,67.6],[-126.5,67.6],[148.5,67.6],[63.5,67.5],[-159,67.5],[116.1,67.4],[-106.4,67.4],[31.1,67.4],[168.6,67.4],[83.6,67.3],[-138.9,67.3],[136.1,67.2],[-86.4,67.2],[51.1,67.2],[-33.8,67.1],[103.7,67.1],[-118.8,67.1],[18.7,67.1],[156.2,67],[-66.3,67],[71.2,67],[-151.3,67],[123.7,66.9],[-98.8,66.9],[38.7,66.9],[176.3,66.9],[-46.2,66.8],[91.3,66.8],[-131.2,66.8],[143.8,66.7],[58.8,66.7],[111.3,66.6],[-111.2,66.6],[26.3,66.6],[163.9,66.5],[78.9,66.5],[-143.6,66.5],[131.4,66.4],[-91.1,66.4],[46.4,66.4],[-176.1,66.3],[-38.6,66.3],[98.9,66.3],[-123.6,66.3],[13.9,66.3],[151.5,66.2],[-71,66.2],[66.5,66.2],[-156,66.2],[-18.5,66.1],[119,66.1],[-103.5,66.1],[34,66.1],[171.5,66],[-51,66],[86.5,66],[-136,66],[139.1,65.9],[54.1,65.9],[106.6,65.8],[-115.9,65.8],[21.6,65.8],[159.1,65.7],[-63.4,65.7],[74.1,65.7],[-148.4,65.7],[126.7,65.6],[-95.8,65.6],[41.7,65.6],[179.2,65.6],[-43.3,65.5],[94.2,65.5],[-128.3,65.5],[146.7,65.4],[61.7,65.4],[-160.8,65.4],[114.3,65.3],[-108.2,65.3],[29.3,65.3],[166.8,65.3],[81.8,65.2],[-140.7,65.2],[134.3,65.1],[-88.2,65.1],[49.3,65.1],[-173.2,65.1],[101.9,65],[-120.6,65],[16.9,65],[154.4,65],[-68.1,64.9],[69.4,64.9],[-153.1,64.9],[-15.6,64.9],[121.9,64.8],[-100.6,64.8],[36.9,64.8],[174.4,64.8],[-48.1,64.8],[89.5,64.7],[-133,64.7],[142,64.7],[57,64.6],[-165.5,64.6],[109.5,64.6],[-113,64.5],[24.5,64.5],[162,64.5],[77.1,64.4],[-145.4,64.4],[129.6,64.4],[-92.9,64.4],[44.6,64.3],[97.1,64.3],[-125.4,64.2],[12.1,64.2],[149.6,64.2],[-72.8,64.2],[64.7,64.2],[-157.8,64.1],[-20.3,64.1],[117.2,64.1],[-105.3,64.1],[32.2,64],[169.7,64],[84.7,64],[-137.8,64],[137.2,63.9],[-85.2,63.9],[52.3,63.9],[104.8,63.8],[-117.7,63.8],[19.8,63.8],[157.3,63.7],[-65.2,63.7],[72.3,63.7],[-150.2,63.7],[124.8,63.6],[-97.6,63.6],[39.9,63.6],[177.4,63.6],[-45.1,63.6],[92.4,63.5],[-130.1,63.5],[144.9,63.5],[59.9,63.4],[112.4,63.4],[-110,63.3],[27.5,63.3],[165,63.3],[80,63.3],[-142.5,63.2],[132.5,63.2],[47.5,63.1],[100,63.1],[-122.4,63.1],[15.1,63],[152.6,63],[-69.9,63],[67.6,63],[-154.9,63],[120.1,62.9],[-102.4,62.9],[35.1,62.9],[172.6,62.9],[-49.9,62.8],[87.6,62.8],[-134.8,62.8],[140.2,62.7],[-82.3,62.7],[55.2,62.7],[107.7,62.6],[-114.8,62.6],[22.7,62.6],[160.2,62.6],[75.2,62.5],[-147.2,62.5],[127.8,62.5],[-94.7,62.5],[42.8,62.4],[95.3,62.4],[-127.2,62.4],[10.3,62.3],[147.8,62.3],[62.8,62.3],[-159.6,62.3],[115.4,62.2],[-107.1,62.2],[30.4,62.2],[167.9,62.1],[82.9,62.1],[-139.6,62.1],[135.4,62],[50.5,62],[103,61.9],[-119.5,61.9],[155.5,61.9],[70.5,61.8],[-152,61.8],[123,61.8],[-99.5,61.8],[38.1,61.7],[-46.9,61.7],[90.6,61.7],[-131.9,61.7],[5.6,61.6],[143.1,61.6],[58.1,61.6],[-164.4,61.6],[110.6,61.5],[-111.9,61.5],[25.7,61.5],[78.2,61.4],[-144.3,61.4],[130.7,61.4],[45.7,61.3],[98.2,61.3],[-124.3,61.2],[13.3,61.2],[150.8,61.2],[-71.7,61.2],[65.8,61.2],[-156.7,61.1],[118.3,61.1],[-104.2,61.1],[33.3,61.1],[170.8,61],[85.8,61],[-136.7,61],[138.4,60.9],[53.4,60.9],[105.9,60.8],[-116.6,60.8],[73.4,60.7],[-149.1,60.7],[126,60.7],[-96.5,60.7],[41,60.7],[-44,60.6],[93.5,60.6],[-129,60.6],[8.5,60.6],[146,60.5],[-76.5,60.5],[61,60.5],[-161.5,60.5],[113.6,60.4],[-108.9,60.4],[28.6,60.4],[166.1,60.4],[81.1,60.3],[-141.4,60.3],[133.6,60.3],[48.6,60.2],[101.2,60.2],[-121.3,60.2],[16.2,60.1],[153.7,60.1],[68.7,60.1],[-153.8,60.1],[121.2,60],[-101.3,60],[36.2,60],[88.8,59.9],[-133.7,59.9],[141.3,59.9],[56.3,59.8],[-166.2,59.8],[108.8,59.8],[-113.7,59.8],[161.4,59.7],[76.4,59.7],[128.9,59.6],[43.9,59.6],[96.4,59.5],[-126.1,59.5],[11.4,59.5],[149,59.5],[-73.5,59.5],[64,59.4],[-158.5,59.4],[116.5,59.4],[-106,59.4],[31.5,59.4],[84,59.3],[-138.5,59.3],[136.6,59.2],[51.6,59.2],[104.1,59.1],[-118.4,59.1],[-65.9,59.1],[71.6,59.1],[124.2,59],[-98.3,59],[39.2,59],[91.7,58.9],[-130.8,58.9],[6.7,58.9],[-78.3,58.8],[59.2,58.8],[111.8,58.8],[-110.7,58.7],[26.8,58.7],[79.3,58.7],[131.8,58.6],[46.8,58.6],[99.4,58.5],[-123.1,58.5],[14.4,58.5],[-70.6,58.4],[66.9,58.4],[-155.6,58.4],[119.4,58.4],[-103.1,58.4],[34.4,58.3],[87,58.3],[-135.5,58.3],[139.5,58.2],[54.5,58.2],[107,58.1],[-115.5,58.1],[159.5,58.1],[-63,58.1],[74.6,58],[127.1,58],[-95.4,58],[42.1,58],[94.6,57.9],[-127.9,57.9],[-75.3,57.8],[62.2,57.8],[114.7,57.8],[-107.8,57.7],[29.7,57.7],[82.2,57.7],[-2.8,57.6],[134.7,57.6],[49.8,57.6],[102.3,57.5],[-120.2,57.5],[-67.7,57.5],[69.8,57.4],[-152.7,57.4],[122.3,57.4],[-100.1,57.4],[37.4,57.4],[89.9,57.3],[-132.6,57.3],[57.4,57.2],[109.9,57.2],[-112.5,57.1],[25,57.1],[162.5,57.1],[77.5,57.1],[130,57],[-92.5,57],[45,57],[97.5,56.9],[-124.9,56.9],[12.6,56.9],[-72.4,56.9],[65.1,56.8],[-157.4,56.8],[117.6,56.8],[-104.9,56.8],[32.6,56.8],[85.1,56.7],[137.7,56.6],[52.7,56.6],[105.2,56.6],[-117.3,56.5],[157.7,56.5],[-64.8,56.5],[72.7,56.5],[125.3,56.4],[-97.2,56.4],[40.3,56.4],[92.8,56.3],[-129.7,56.3],[60.3,56.3],[112.9,56.2],[-109.6,56.2],[27.9,56.2],[80.4,56.1],[-4.6,56.1],[132.9,56.1],[-89.6,56],[48,56],[100.5,56],[-122,56],[-69.5,55.9],[68,55.9],[120.5,55.8],[-102,55.8],[35.6,55.8],[88.1,55.8],[55.6,55.7],[108.1,55.6],[-114.4,55.6],[23.2,55.6],[160.7,55.6],[-61.8,55.6],[75.7,55.5],[128.2,55.5],[-94.3,55.5],[43.2,55.5],[95.7,55.4],[-126.8,55.4],[-74.2,55.3],[63.3,55.3],[115.8,55.3],[-106.7,55.3],[30.8,55.2],[83.3,55.2],[-1.6,55.2],[-86.6,55.1],[50.9,55.1],[103.4,55],[-119.1,55],[155.9,55],[-66.6,55],[70.9,55],[123.5,54.9],[-99,54.9],[38.5,54.9],[91,54.8],[-79,54.8],[58.5,54.8],[-164,54.7],[111.1,54.7],[-111.4,54.7],[26.1,54.7],[-58.9,54.6],[78.6,54.6],[-6.4,54.6],[131.1,54.6],[-91.4,54.6],[46.1,54.5],[98.7,54.5],[-123.8,54.5],[-71.3,54.4],[66.2,54.4],[118.7,54.4],[-103.8,54.3],[33.7,54.3],[86.3,54.3],[138.8,54.2],[-83.7,54.2],[53.8,54.2],[106.3,54.1],[-116.2,54.1],[21.3,54.1],[158.9,54.1],[-63.6,54.1],[73.9,54.1],[126.4,54],[-96.1,54],[41.4,54],[93.9,53.9],[-128.6,53.9],[8.9,53.9],[-76,53.9],[61.5,53.9],[114,53.8],[-108.5,53.8],[29,53.8],[81.5,53.7],[134.1,53.7],[-88.4,53.7],[49.1,53.6],[101.6,53.6],[-120.9,53.6],[16.6,53.6],[-68.4,53.5],[69.1,53.5],[121.7,53.5],[-100.8,53.4],[36.7,53.4],[89.2,53.4],[56.7,53.3],[109.3,53.3],[-113.2,53.2],[24.3,53.2],[-60.7,53.2],[76.8,53.2],[-8.2,53.1],[129.3,53.1],[-93.2,53.1],[44.3,53.1],[96.9,53],[-125.6,53],[11.9,53],[-73.1,53],[64.4,53],[116.9,52.9],[-105.6,52.9],[31.9,52.9],[84.5,52.8],[-0.5,52.8],[137,52.8],[-85.5,52.8],[52,52.8],[104.5,52.7],[-118,52.7],[19.5,52.7],[157,52.7],[-65.5,52.7],[72.1,52.6],[124.6,52.6],[-97.9,52.6],[39.6,52.6],[92.1,52.5],[7.1,52.5],[-77.8,52.4],[59.7,52.4],[112.2,52.4],[-110.3,52.4],[27.2,52.4],[-57.8,52.3],[79.7,52.3],[132.2,52.3],[-90.2,52.2],[47.3,52.2],[99.8,52.2],[-122.7,52.2],[14.8,52.2],[-70.2,52.1],[67.3,52.1],[119.8,52.1],[-102.6,52],[34.9,52],[87.4,52],[139.9,51.9],[-82.6,51.9],[54.9,51.9],[107.4,51.9],[-115,51.8],[22.5,51.8],[-62.5,51.8],[75,51.8],[127.5,51.7],[-95,51.7],[42.5,51.7],[95,51.7],[-127.4,51.6],[10.1,51.6],[-74.9,51.6],[62.6,51.6],[115.1,51.5],[-107.4,51.5],[30.1,51.5],[82.6,51.5],[-2.3,51.4],[135.2,51.4],[-87.3,51.4],[50.2,51.4],[102.7,51.3],[-119.8,51.3],[17.7,51.3],[-67.3,51.3],[70.2,51.3],[122.8,51.2],[-99.7,51.2],[37.8,51.2],[90.3,51.1],[5.3,51.1],[142.8,51.1],[-79.7,51.1],[57.8,51.1],[110.4,51],[-112.1,51],[25.4,51],[-59.6,51],[77.9,50.9],[130.4,50.9],[-92.1,50.9],[45.5,50.9],[98,50.8],[-124.5,50.8],[13,50.8],[-72,50.8],[65.5,50.7],[118,50.7],[-104.5,50.7],[33.1,50.7],[85.6,50.6],[138.1,50.6],[-84.4,50.6],[53.1,50.5],[105.6,50.5],[-116.9,50.5],[20.7,50.5],[-64.3,50.4],[73.2,50.4],[125.7,50.4],[-96.8,50.4],[40.7,50.4],[93.2,50.3],[8.3,50.3],[-76.7,50.2],[60.8,50.2],[113.3,50.2],[-109.2,50.2],[28.3,50.2],[-56.7,50.1],[80.8,50.1],[133.4,50.1],[-89.1,50.1],[48.4,50],[100.9,50],[-121.6,50],[15.9,50],[-69.1,49.9],[68.4,49.9],[121,49.9],[-101.5,49.9],[36,49.8],[88.5,49.8],[3.5,49.8],[-81.5,49.7],[56,49.7],[108.6,49.7],[-113.9,49.7],[23.6,49.7],[76.1,49.6],[128.6,49.6],[-93.9,49.6],[43.6,49.5],[96.2,49.5],[-126.3,49.5],[11.2,49.5],[-73.8,49.4],[63.7,49.4],[116.2,49.4],[-106.3,49.4],[31.2,49.3],[-53.7,49.3],[83.8,49.3],[-1.2,49.3],[136.3,49.3],[-86.2,49.2],[51.3,49.2],[103.8,49.2],[-118.7,49.2],[18.8,49.2],[-66.1,49.1],[71.4,49.1],[123.9,49.1],[-98.6,49.1],[38.9,49],[91.4,49],[6.4,49],[-78.5,48.9],[59,48.9],[111.5,48.9],[-111,48.9],[26.5,48.8],[-58.5,48.8],[79,48.8],[131.6,48.8],[-90.9,48.7],[46.6,48.7],[99.1,48.7],[14.1,48.7],[-70.9,48.6],[66.6,48.6],[119.2,48.6],[-103.3,48.6],[34.2,48.5],[86.7,48.5],[1.7,48.5],[139.2,48.5],[-83.3,48.4],[54.2,48.4],[106.8,48.4],[-115.7,48.4],[21.8,48.4],[74.3,48.3],[126.8,48.3],[-95.7,48.3],[41.8,48.2],[94.4,48.2],[9.4,48.2],[-75.6,48.1],[61.9,48.1],[114.4,48.1],[-108.1,48.1],[29.4,48.1],[-55.6,48],[82,48],[-3,48],[134.5,48],[-88,48],[49.5,47.9],[102,47.9],[-120.5,47.9],[17,47.9],[-68,47.8],[69.6,47.8],[122.1,47.8],[-100.4,47.8],[37.1,47.8],[89.6,47.7],[4.6,47.7],[142.1,47.7],[-80.3,47.7],[57.2,47.6],[109.7,47.6],[-112.8,47.6],[24.7,47.6],[77.2,47.5],[129.7,47.5],[-92.7,47.5],[44.8,47.5],[97.3,47.4],[12.3,47.4],[-72.7,47.4],[64.8,47.3],[117.3,47.3],[-105.1,47.3],[32.4,47.3],[84.9,47.2],[-0.1,47.2],[137.4,47.2],[-85.1,47.2],[52.4,47.2],[104.9,47.1],[-117.5,47.1],[20,47.1],[-65,47.1],[72.5,47.1],[125,47],[-97.5,47],[40,47],[92.5,46.9],[7.6,46.9],[-77.4,46.9],[60.1,46.9],[112.6,46.8],[-109.9,46.8],[27.6,46.8],[80.1,46.8],[132.7,46.7],[-89.8,46.7],[47.7,46.7],[100.2,46.6],[-122.3,46.6],[15.2,46.6],[-69.8,46.6],[67.7,46.6],[120.3,46.5],[-102.2,46.5],[35.3,46.5],[87.8,46.5],[2.8,46.4],[-82.2,46.4],[55.3,46.4],[107.9,46.4],[-114.6,46.3],[22.9,46.3],[75.4,46.3],[127.9,46.2],[-94.6,46.2],[43,46.2],[95.5,46.2],[10.5,46.1],[-74.5,46.1],[63,46.1],[115.5,46.1],[-107,46.1],[83.1,46],[135.6,46],[-86.9,45.9],[103.1,45.9],[-119.4,45.9],[18.2,45.9],[-66.8,45.8],[70.7,45.8],[123.2,45.8],[-99.3,45.8],[38.2,45.8],[90.7,45.7],[5.8,45.7],[-79.2,45.7],[58.3,45.6],[110.8,45.6],[-111.7,45.6],[25.8,45.6],[78.3,45.5],[130.9,45.5],[-91.6,45.5],[45.9,45.5],[98.4,45.4],[-71.6,45.4],[65.9,45.4],[118.5,45.3],[-104,45.3],[33.5,45.3],[86,45.2],[1,45.2],[-84,45.2],[53.5,45.2],[106.1,45.1],[-116.4,45.1],[21.1,45.1],[-63.9,45.1],[73.6,45.1],[126.1,45],[-96.4,45],[41.1,45],[93.7,45],[8.7,44.9],[-76.3,44.9],[61.2,44.9],[113.7,44.9],[-108.8,44.8],[28.7,44.8],[81.3,44.8],[133.8,44.7],[-88.7,44.7],[101.3,44.7],[-121.2,44.7],[16.3,44.7],[-68.6,44.6],[68.9,44.6],[121.4,44.6],[-101.1,44.6],[88.9,44.5],[3.9,44.5],[-81,44.5],[56.5,44.4],[109,44.4],[-113.5,44.4],[24,44.4],[76.5,44.3],[129.1,44.3],[-93.4,44.3],[44.1,44.3],[96.6,44.2],[11.6,44.2],[-73.4,44.2],[64.1,44.2],[116.7,44.1],[-105.8,44.1],[84.2,44.1],[-0.8,44],[-85.8,44],[51.7,44],[104.3,43.9],[-118.2,43.9],[19.3,43.9],[-65.7,43.9],[71.8,43.9],[124.3,43.8],[-98.2,43.8],[91.9,43.8],[6.9,43.7],[144.4,43.7],[-78.1,43.7],[59.4,43.7],[111.9,43.7],[-110.6,43.7],[26.9,43.6],[79.5,43.6],[132,43.6],[-90.5,43.5],[47,43.5],[99.5,43.5],[-123,43.5],[-70.5,43.4],[67.1,43.4],[119.6,43.4],[-102.9,43.4],[87.1,43.3],[2.1,43.3],[-82.8,43.3],[54.7,43.3],[107.2,43.2],[-115.3,43.2],[22.2,43.2],[74.7,43.2],[127.2,43.1],[-95.2,43.1],[42.3,43.1],[94.8,43.1],[-75.2,43],[62.3,43],[114.8,42.9],[-107.6,42.9],[82.4,42.9],[-2.6,42.9],[-87.6,42.8],[102.4,42.8],[-120,42.8],[70,42.7],[122.5,42.7],[-100,42.7],[90,42.6],[142.6,42.6],[-79.9,42.6],[57.6,42.5],[110.1,42.5],[-112.4,42.5],[25.1,42.5],[77.6,42.4],[-7.3,42.4],[130.2,42.4],[-92.3,42.4],[45.2,42.4],[97.7,42.3],[12.7,42.3],[-72.3,42.3],[65.2,42.3],[117.8,42.2],[-104.7,42.2],[85.3,42.2],[0.3,42.1],[-84.7,42.1],[52.8,42.1],[105.4,42.1],[-117.1,42.1],[20.4,42],[72.9,42],[125.4,42],[-97.1,41.9],[93,41.9],[-77,41.8],[60.5,41.8],[113,41.8],[-109.5,41.8],[28.1,41.8],[80.6,41.7],[-4.4,41.7],[-89.4,41.7],[48.1,41.7],[100.6,41.6],[-121.9,41.6],[15.7,41.6],[68.2,41.6],[120.7,41.5],[-101.8,41.5],[35.7,41.5],[88.2,41.5],[-81.7,41.4],[55.8,41.4],[108.3,41.4],[-114.2,41.3],[23.3,41.3],[75.8,41.3],[128.4,41.3],[-94.1,41.2],[43.4,41.2],[95.9,41.2],[-74.1,41.1],[63.4,41.1],[116,41.1],[-106.5,41.1],[31,41.1],[83.5,41],[-1.5,41],[-86.5,41],[103.6,40.9],[-118.9,40.9],[71.1,40.9],[123.6,40.8],[-98.9,40.8],[38.6,40.8],[91.2,40.8],[-78.8,40.7],[58.7,40.7],[111.2,40.7],[-111.3,40.7],[26.2,40.6],[78.8,40.6],[-6.2,40.6],[-91.2,40.6],[46.3,40.5],[98.8,40.5],[-123.7,40.5],[66.4,40.4],[118.9,40.4],[-103.6,40.4],[33.9,40.4],[86.4,40.3],[-83.5,40.3],[54,40.3],[106.5,40.2],[-116,40.2],[21.5,40.2],[74,40.2],[126.6,40.1],[-95.9,40.1],[41.6,40.1],[94.1,40.1],[9.1,40.1],[-75.9,40],[61.6,40],[114.2,40],[-108.3,40],[29.2,40],[81.7,39.9],[-3.3,39.9],[-88.3,39.9],[49.2,39.9],[101.8,39.8],[-120.7,39.8],[69.3,39.8],[121.8,39.7],[-100.7,39.7],[36.8,39.7],[89.4,39.7],[141.9,39.6],[-80.6,39.6],[56.9,39.6],[109.4,39.6],[-113.1,39.5],[77,39.5],[-8,39.5],[-93,39.4],[44.5,39.4],[97,39.4],[64.6,39.3],[117.1,39.3],[-105.4,39.3],[32.1,39.3],[84.6,39.2],[-0.4,39.2],[-85.3,39.2],[104.7,39.1],[-117.8,39.1],[72.2,39.1],[-97.7,39],[39.8,39],[92.3,39],[-77.7,38.9],[59.8,38.9],[112.3,38.9],[-110.1,38.9],[27.4,38.9],[79.9,38.8],[-5.1,38.8],[-90.1,38.8],[47.4,38.8],[99.9,38.7],[-122.5,38.7],[67.5,38.7],[-102.5,38.6],[35,38.6],[87.5,38.6],[140.1,38.5],[-82.4,38.5],[55.1,38.5],[107.6,38.5],[-114.9,38.4],[22.6,38.4],[75.1,38.4],[127.7,38.4],[-94.8,38.4],[42.7,38.3],[95.2,38.3],[62.7,38.2],[115.3,38.2],[-107.2,38.2],[30.3,38.2],[82.8,38.1],[-2.2,38.1],[-87.2,38.1],[102.9,38],[-119.6,38],[70.4,38],[-99.6,37.9],[38,37.9],[90.5,37.9],[-79.5,37.8],[58,37.8],[110.5,37.8],[-112,37.8],[78.1,37.7],[-6.9,37.7],[-91.9,37.7],[45.6,37.7],[98.1,37.6],[13.2,37.6],[65.7,37.6],[118.2,37.5],[-104.3,37.5],[33.2,37.5],[85.7,37.5],[-84.2,37.4],[105.8,37.4],[-116.7,37.4],[73.3,37.3],[-96.6,37.3],[40.9,37.3],[93.4,37.2],[-76.6,37.2],[60.9,37.2],[113.5,37.1],[-109,37.1],[28.5,37.1],[81,37.1],[-4,37],[-89,37],[48.5,37],[101.1,37],[-121.4,37],[68.6,36.9],[121.1,36.9],[-101.4,36.9],[36.1,36.9],[88.7,36.8],[3.7,36.8],[-81.3,36.8],[56.2,36.8],[108.7,36.7],[-113.8,36.7],[76.3,36.7],[128.8,36.6],[-93.7,36.6],[43.8,36.6],[96.3,36.6],[63.9,36.5],[116.4,36.5],[-106.1,36.5],[83.9,36.4],[136.5,36.4],[-86,36.4],[51.5,36.4],[104,36.3],[-118.5,36.3],[71.5,36.3],[-98.4,36.2],[39.1,36.2],[91.6,36.2],[6.6,36.1],[-78.4,36.1],[59.1,36.1],[111.7,36.1],[-110.8,36.1],[79.2,36],[-90.8,36],[46.7,36],[99.3,35.9],[66.8,35.9],[119.3,35.8],[-103.2,35.8],[86.9,35.8],[1.9,35.7],[139.4,35.7],[-83.1,35.7],[54.4,35.7],[106.9,35.7],[-115.6,35.7],[74.5,35.6],[127,35.6],[-95.5,35.6],[42,35.6],[94.5,35.5],[9.5,35.5],[62.1,35.5],[114.6,35.4],[-107.9,35.4],[82.1,35.4],[134.6,35.3],[-87.8,35.3],[49.7,35.3],[102.2,35.3],[-120.3,35.3],[69.7,35.2],[-100.2,35.2],[37.3,35.2],[89.8,35.1],[4.8,35.1],[-80.2,35.1],[57.3,35.1],[109.8,35],[-112.6,35],[24.9,35],[77.4,35],[-92.6,34.9],[44.9,34.9],[97.4,34.9],[65,34.8],[117.5,34.8],[-105,34.8],[32.5,34.8],[85,34.7],[0.1,34.7],[137.6,34.7],[-84.9,34.7],[52.6,34.7],[105.1,34.6],[-117.4,34.6],[72.6,34.6],[-97.3,34.5],[40.2,34.5],[92.7,34.5],[7.7,34.5],[60.2,34.4],[112.8,34.4],[-109.7,34.4],[80.3,34.3],[-4.7,34.3],[132.8,34.3],[-89.7,34.3],[47.8,34.3],[100.4,34.2],[67.9,34.2],[-102.1,34.1],[88,34.1],[3,34.1],[-82,34],[55.5,34],[108,34],[-114.5,34],[75.6,33.9],[-94.4,33.9],[43.1,33.9],[95.6,33.8],[63.2,33.8],[115.7,33.8],[-106.8,33.7],[83.2,33.7],[-1.7,33.7],[135.8,33.7],[-86.7,33.7],[50.8,33.6],[103.3,33.6],[70.8,33.5],[-99.1,33.5],[38.4,33.5],[90.9,33.5],[5.9,33.4],[58.4,33.4],[111,33.4],[-111.5,33.4],[78.5,33.3],[-6.5,33.3],[131,33.3],[-91.5,33.3],[46,33.3],[98.6,33.2],[66.1,33.2],[118.6,33.1],[-103.9,33.1],[86.2,33.1],[1.2,33],[-83.8,33],[53.7,33],[106.2,33],[-116.3,33],[73.8,32.9],[-96.2,32.9],[41.3,32.9],[93.8,32.8],[8.8,32.8],[61.4,32.8],[113.9,32.7],[-108.6,32.7],[81.4,32.7],[-3.6,32.7],[-88.5,32.6],[49,32.6],[101.5,32.6],[69,32.5],[-100.9,32.5],[36.6,32.5],[89.1,32.4],[4.1,32.4],[-80.9,32.4],[56.6,32.4],[109.2,32.4],[-113.3,32.3],[76.7,32.3],[-8.3,32.3],[-93.3,32.3],[44.2,32.2],[96.8,32.2],[11.8,32.2],[64.3,32.1],[116.8,32.1],[-105.7,32.1],[84.4,32.1],[-0.6,32],[-85.6,32],[51.9,32],[104.4,32],[72,31.9],[-98,31.9],[39.5,31.9],[92,31.8],[7,31.8],[59.6,31.8],[112.1,31.7],[-110.4,31.7],[79.6,31.7],[-5.4,31.7],[-90.3,31.6],[47.2,31.6],[99.7,31.6],[14.7,31.6],[67.2,31.5],[119.7,31.5],[-102.7,31.5],[34.8,31.5],[87.3,31.4],[2.3,31.4],[-82.7,31.4],[54.8,31.4],[107.3,31.4],[-115.1,31.3],[22.4,31.3],[74.9,31.3],[-95.1,31.3],[42.4,31.2],[94.9,31.2],[10,31.2],[62.5,31.2],[115,31.1],[-107.5,31.1],[30,31.1],[82.5,31.1],[-2.4,31],[-87.4,31],[50.1,31],[102.6,31],[70.1,30.9],[-99.8,30.9],[37.7,30.9],[90.2,30.8],[5.2,30.8],[57.7,30.8],[110.3,30.7],[-112.2,30.7],[25.3,30.7],[77.8,30.7],[-7.2,30.7],[-92.2,30.6],[45.3,30.6],[97.9,30.6],[12.9,30.6],[65.4,30.5],[117.9,30.5],[-104.6,30.5],[33,30.5],[85.5,30.5],[0.5,30.4],[-84.5,30.4],[53,30.4],[105.5,30.4],[20.6,30.3],[73.1,30.3],[-96.9,30.3],[40.6,30.3],[93.1,30.2],[8.2,30.2],[60.7,30.2],[113.2,30.1],[-109.3,30.1],[28.2,30.1],[80.7,30.1],[-4.2,30.1],[48.3,30],[100.8,30],[15.8,30],[68.3,29.9],[120.9,29.9],[-101.6,29.9],[35.9,29.9],[88.4,29.8],[3.4,29.8],[-81.6,29.8],[55.9,29.8],[108.5,29.8],[23.5,29.7],[76,29.7],[-9,29.7],[43.5,29.6],[96.1,29.6],[11.1,29.6],[63.6,29.6],[116.1,29.5],[-106.4,29.5],[31.1,29.5],[83.7,29.5],[-1.3,29.4],[51.2,29.4],[103.7,29.4],[18.7,29.4],[71.3,29.3],[-98.7,29.3],[38.8,29.3],[91.3,29.2],[6.3,29.2],[58.9,29.2],[111.4,29.2],[-111.1,29.1],[26.4,29.1],[78.9,29.1],[-6.1,29.1],[46.5,29],[99,29],[14,29],[66.5,29],[119.1,28.9],[-103.4,28.9],[34.1,28.9],[86.6,28.9],[1.6,28.8],[54.1,28.8],[106.7,28.8],[21.7,28.8],[74.2,28.7],[-10.8,28.7],[-95.8,28.7],[41.7,28.7],[94.3,28.6],[9.3,28.6],[61.8,28.6],[114.3,28.6],[-108.2,28.5],[29.3,28.5],[81.9,28.5],[-3.1,28.5],[101.9,28.4],[16.9,28.4],[69.5,28.4],[-100.5,28.3],[37,28.3],[89.5,28.3],[4.5,28.2],[57.1,28.2],[109.6,28.2],[-112.9,28.2],[24.6,28.2],[77.1,28.1],[-7.9,28.1],[44.7,28.1],[97.2,28],[12.2,28],[64.7,28],[117.2,28],[-105.2,27.9],[32.3,27.9],[84.8,27.9],[-0.2,27.9],[52.3,27.8],[104.8,27.8],[19.9,27.8],[72.4,27.8],[-12.6,27.7],[-97.6,27.7],[39.9,27.7],[92.4,27.7],[7.5,27.7],[60,27.6],[112.5,27.6],[-110,27.6],[27.5,27.6],[80,27.5],[-4.9,27.5],[47.6,27.5],[100.1,27.4],[15.1,27.4],[67.6,27.4],[120.2,27.4],[-102.3,27.4],[87.7,27.3],[2.7,27.3],[-82.3,27.3],[55.2,27.3],[107.8,27.2],[22.8,27.2],[75.3,27.2],[-9.7,27.1],[42.8,27.1],[95.4,27.1],[10.4,27.1],[62.9,27],[115.4,27],[-107.1,27],[30.5,27],[83,26.9],[-2,26.9],[103,26.9],[18.1,26.8],[70.6,26.8],[-99.4,26.8],[38.1,26.8],[90.6,26.7],[5.7,26.7],[58.2,26.7],[110.7,26.6],[-111.8,26.6],[25.7,26.6],[78.2,26.6],[-6.7,26.6],[45.8,26.5],[98.3,26.5],[13.3,26.5],[65.8,26.4],[118.4,26.4],[-104.1,26.4],[33.4,26.4],[85.9,26.4],[0.9,26.3],[106,26.3],[21,26.2],[73.5,26.2],[-11.5,26.2],[41,26.2],[93.6,26.1],[8.6,26.1],[61.1,26.1],[113.6,26],[-108.9,26],[28.6,26],[81.2,26],[-3.8,26],[48.7,25.9],[101.2,25.9],[16.2,25.9],[68.8,25.9],[-101.2,25.8],[88.8,25.8],[3.8,25.8],[-81.1,25.7],[108.9,25.7],[23.9,25.7],[76.4,25.6],[-8.6,25.6],[44,25.6],[96.5,25.5],[11.5,25.5],[64,25.5],[116.6,25.5],[-105.9,25.5],[31.6,25.4],[84.1,25.4],[-0.9,25.4],[104.2,25.3],[19.2,25.3],[71.7,25.3],[-13.3,25.3],[-98.3,25.2],[39.2,25.2],[91.8,25.2],[6.8,25.2],[111.8,25.1],[26.8,25.1],[79.4,25.1],[-5.6,25],[46.9,25],[99.4,25],[14.4,24.9],[67,24.9],[-103,24.9],[34.5,24.9],[87,24.8],[2,24.8],[107.1,24.7],[22.1,24.7],[74.6,24.7],[-10.4,24.7],[42.2,24.6],[94.7,24.6],[9.7,24.6],[114.7,24.5],[-107.7,24.5],[29.8,24.5],[82.3,24.5],[-2.7,24.5],[49.8,24.4],[102.3,24.4],[17.4,24.4],[69.9,24.3],[-15.1,24.3],[-100.1,24.3],[89.9,24.3],[5,24.2],[110,24.2],[25,24.1],[77.5,24.1],[-7.4,24.1],[45.1,24.1],[97.6,24],[12.6,24],[117.7,24],[-104.8,23.9],[32.7,23.9],[85.2,23.9],[0.2,23.9],[52.7,23.8],[105.3,23.8],[20.3,23.8],[72.8,23.8],[-12.2,23.7],[40.3,23.7],[92.9,23.7],[7.9,23.7],[112.9,23.6],[28,23.6],[80.5,23.5],[-4.5,23.5],[48,23.5],[100.5,23.5],[15.6,23.4],[120.6,23.4],[-101.9,23.4],[88.1,23.3],[3.2,23.3],[55.7,23.3],[108.2,23.2],[23.2,23.2],[75.7,23.2],[-9.2,23.2],[43.3,23.1],[95.8,23.1],[10.8,23.1],[115.9,23],[30.9,23],[83.4,23],[-1.6,23],[50.9,22.9],[103.5,22.9],[18.5,22.9],[71,22.8],[-14,22.8],[-99,22.8],[6.1,22.7],[58.6,22.7],[111.1,22.7],[26.1,22.7],[78.7,22.6],[-6.3,22.6],[46.2,22.6],[98.7,22.5],[13.7,22.5],[-103.7,22.4],[33.8,22.4],[86.3,22.4],[1.3,22.4],[-83.6,22.4],[53.9,22.4],[106.4,22.3],[21.4,22.3],[73.9,22.3],[-11.1,22.2],[41.5,22.2],[94,22.2],[9,22.2],[29.1,22.1],[81.6,22.1],[-3.4,22],[49.1,22],[101.7,22],[16.7,21.9],[-15.8,21.9],[-100.8,21.9],[36.7,21.9],[4.3,21.8],[56.8,21.8],[109.3,21.8],[24.3,21.7],[76.9,21.7],[-8.1,21.7],[44.4,21.7],[96.9,21.6],[11.9,21.6],[-158,21.6],[32,21.5],[84.5,21.5],[-0.5,21.5],[52.1,21.4],[104.6,21.4],[19.6,21.4],[72.1,21.4],[-12.9,21.3],[-97.8,21.3],[39.7,21.3],[92.2,21.3],[7.2,21.3],[-77.8,21.2],[27.3,21.2],[79.8,21.1],[-5.2,21.1],[47.3,21.1],[99.8,21.1],[14.9,21],[-102.6,21],[34.9,21],[2.5,20.9],[55,20.9],[22.5,20.8],[75,20.8],[-9.9,20.8],[42.6,20.7],[95.1,20.7],[10.1,20.7],[30.2,20.6],[82.7,20.6],[-2.3,20.6],[-87.3,20.5],[50.2,20.5],[102.8,20.5],[17.8,20.5],[-14.7,20.4],[-99.7,20.4],[5.4,20.3],[25.5,20.3],[78,20.2],[-7,20.2],[45.5,20.2],[98,20.1],[13.1,20.1],[-104.4,20.1],[33.1,20],[85.6,20],[0.7,20],[53.2,20],[105.7,19.9],[20.7,19.9],[73.2,19.9],[-11.7,19.9],[-96.7,19.8],[40.8,19.8],[8.3,19.8],[28.4,19.7],[80.9,19.7],[-4.1,19.7],[-89.1,19.6],[48.4,19.6],[101,19.6],[16,19.6],[-101.5,19.5],[36,19.5],[3.6,19.4],[56.1,19.4],[23.6,19.4],[76.2,19.3],[-8.8,19.3],[43.7,19.3],[96.2,19.2],[11.2,19.2],[31.3,19.1],[83.8,19.1],[-1.2,19.1],[51.4,19.1],[103.9,19],[18.9,19],[-13.6,19],[-98.5,18.9],[6.5,18.9],[26.6,18.8],[79.1,18.8],[-5.9,18.8],[-90.9,18.7],[46.6,18.7],[99.2,18.7],[14.2,18.7],[-70.8,18.6],[-103.3,18.6],[34.2,18.6],[1.8,18.5],[54.3,18.5],[21.8,18.5],[74.4,18.4],[-10.6,18.4],[-95.6,18.4],[41.9,18.4],[94.4,18.3],[9.4,18.3],[29.5,18.2],[82,18.2],[-3,18.2],[49.6,18.2],[102.1,18.1],[17.1,18.1],[-15.4,18.1],[122.1,18.1],[-100.3,18],[37.2,18],[4.7,18],[24.8,17.9],[77.3,17.9],[-7.7,17.9],[-92.7,17.8],[44.8,17.8],[97.3,17.8],[12.4,17.8],[32.4,17.7],[0,17.6],[52.5,17.6],[105,17.6],[20,17.6],[-12.4,17.5],[-97.4,17.5],[7.6,17.4],[27.7,17.4],[80.2,17.3],[-4.8,17.3],[-89.8,17.3],[47.7,17.3],[100.3,17.2],[15.3,17.2],[35.3,17.1],[2.9,17.1],[23,17],[75.5,17],[-9.5,17],[-94.5,16.9],[43,16.9],[95.5,16.9],[10.6,16.9],[30.6,16.8],[-1.8,16.8],[50.7,16.7],[103.2,16.7],[18.2,16.7],[-14.2,16.6],[38.3,16.6],[5.8,16.5],[25.9,16.5],[78.4,16.4],[-6.6,16.4],[-91.6,16.4],[45.9,16.4],[98.5,16.4],[13.5,16.3],[33.5,16.3],[1.1,16.2],[106.1,16.1],[21.1,16.1],[73.7,16.1],[-11.3,16.1],[-96.3,16.1],[8.7,16],[28.8,15.9],[-3.7,15.9],[48.9,15.8],[101.4,15.8],[16.4,15.8],[-16.1,15.7],[121.5,15.7],[36.5,15.7],[4,15.7],[24.1,15.6],[76.6,15.6],[-8.4,15.5],[44.1,15.5],[11.7,15.5],[31.7,15.4],[-0.7,15.3],[-85.7,15.3],[104.3,15.3],[19.3,15.2],[-13.1,15.2],[39.4,15.2],[6.9,15.1],[27,15],[79.5,15],[-5.5,15],[-90.4,15],[47.1,15],[99.6,14.9],[14.6,14.9],[34.7,14.8],[2.2,14.8],[107.2,14.7],[22.3,14.7],[74.8,14.7],[-10.2,14.7],[9.9,14.6],[29.9,14.5],[-2.5,14.4],[-87.5,14.4],[102.5,14.4],[17.5,14.4],[-14.9,14.3],[37.6,14.3],[5.1,14.2],[25.2,14.2],[77.7,14.1],[-7.3,14.1],[45.2,14.1],[12.8,14],[32.8,14],[0.4,13.9],[-84.6,13.9],[105.4,13.8],[20.5,13.8],[-12,13.8],[40.5,13.7],[8.1,13.7],[28.1,13.6],[-4.3,13.6],[-89.3,13.5],[100.7,13.5],[15.7,13.5],[-16.7,13.4],[120.8,13.4],[35.8,13.4],[3.3,13.4],[108.4,13.3],[23.4,13.3],[75.9,13.3],[-9.1,13.2],[43.4,13.2],[11,13.2],[31,13.1],[-1.4,13],[-86.4,13],[103.6,13],[18.6,13],[-13.8,12.9],[123.7,12.9],[38.7,12.9],[6.2,12.8],[26.3,12.7],[78.8,12.7],[-6.2,12.7],[98.9,12.6],[13.9,12.6],[34,12.5],[1.5,12.5],[-83.5,12.5],[106.6,12.4],[21.6,12.4],[-10.9,12.4],[41.6,12.3],[9.2,12.3],[29.2,12.2],[-3.2,12.2],[16.8,12.1],[-15.6,12],[36.9,12],[4.4,12],[24.5,11.9],[77,11.8],[-8,11.8],[12.1,11.7],[32.2,11.7],[-0.3,11.6],[-85.3,11.6],[104.7,11.6],[19.8,11.5],[-12.7,11.5],[39.8,11.5],[7.4,11.4],[27.4,11.3],[-5,11.3],[15,11.2],[-70,11.2],[35.1,11.1],[2.6,11.1],[107.7,11],[22.7,11],[-9.8,11],[42.7,10.9],[10.3,10.9],[-74.7,10.9],[30.3,10.8],[-2.1,10.8],[50.4,10.7],[18,10.7],[-14.5,10.6],[123,10.6],[38,10.6],[5.6,10.6],[25.6,10.5],[78.1,10.4],[-6.8,10.4],[45.7,10.4],[13.2,10.3],[-71.8,10.3],[33.3,10.3],[0.8,10.2],[-84.2,10.2],[105.9,10.2],[20.9,10.1],[-64.1,10.1],[-11.6,10.1],[40.9,10.1],[8.5,10],[28.5,9.9],[-3.9,9.9],[48.6,9.9],[16.1,9.8],[-68.8,9.8],[36.2,9.7],[3.7,9.7],[23.8,9.6],[-61.2,9.6],[-8.7,9.6],[43.9,9.5],[11.4,9.5],[-73.6,9.5],[31.5,9.4],[-1,9.4],[19.1,9.3],[-65.9,9.3],[-13.4,9.2],[39.1,9.2],[6.7,9.2],[-78.3,9.1],[26.7,9.1],[-5.7,9],[46.8,9],[99.3,9],[14.3,9],[-70.7,8.9],[34.4,8.9],[1.9,8.8],[-83.1,8.8],[22,8.7],[-63,8.7],[-10.5,8.7],[42.1,8.7],[9.6,8.6],[-75.4,8.6],[29.7,8.5],[-2.8,8.5],[49.7,8.5],[17.3,8.4],[-67.7,8.4],[37.3,8.3],[4.9,8.3],[24.9,8.2],[-60.1,8.2],[77.4,8.2],[-7.5,8.2],[45,8.1],[12.5,8.1],[-72.5,8.1],[32.6,8],[0.1,8],[20.2,7.9],[-64.8,7.9],[-12.3,7.8],[125.2,7.8],[40.2,7.8],[7.8,7.8],[-77.2,7.7],[27.8,7.7],[80.4,7.7],[-4.6,7.6],[47.9,7.6],[15.5,7.6],[-69.5,7.5],[35.5,7.5],[3.1,7.4],[23.1,7.4],[-61.9,7.3],[-9.3,7.3],[43.2,7.3],[10.7,7.2],[-74.3,7.2],[30.8,7.2],[-1.7,7.1],[18.4,7],[-66.6,7],[38.4,7],[6,6.9],[26,6.8],[-58.9,6.8],[-6.4,6.8],[46.1,6.8],[13.6,6.7],[-71.3,6.7],[33.7,6.6],[1.2,6.6],[21.3,6.5],[-63.7,6.5],[41.4,6.4],[8.9,6.4],[-76.1,6.4],[29,6.3],[-3.5,6.3],[49,6.2],[101.6,6.2],[16.6,6.2],[-68.4,6.2],[36.6,6.1],[24.2,6],[-60.8,6],[-8.2,5.9],[44.3,5.9],[11.8,5.9],[-73.2,5.8],[116.9,5.8],[31.9,5.8],[-0.6,5.7],[19.5,5.6],[-65.5,5.6],[39.6,5.6],[7.1,5.5],[27.2,5.4],[-57.8,5.4],[-5.3,5.4],[47.2,5.4],[14.8,5.3],[-70.2,5.3],[34.8,5.2],[22.4,5.1],[-62.6,5.1],[42.5,5],[10,5],[-75,5],[115.1,4.9],[30.1,4.9],[-54.9,4.9],[-2.4,4.9],[102.7,4.8],[17.7,4.8],[-67.3,4.8],[37.7,4.7],[25.3,4.6],[-59.6,4.6],[-7.1,4.5],[45.4,4.5],[97.9,4.5],[13,4.5],[-72,4.5],[118,4.4],[33,4.4],[-52,4.4],[20.6,4.3],[-64.4,4.2],[40.7,4.2],[-76.8,4.1],[28.3,4.1],[-56.7,4],[100.9,4],[15.9,3.9],[-69.1,3.9],[35.9,3.9],[23.5,3.7],[-61.4,3.7],[43.6,3.7],[11.1,3.6],[-73.8,3.6],[116.2,3.6],[31.2,3.5],[-53.8,3.5],[18.8,3.4],[-66.2,3.4],[38.9,3.3],[26.5,3.2],[-58.5,3.2],[46.5,3.1],[99.1,3.1],[14.1,3.1],[-70.9,3.1],[34.1,3],[21.7,2.9],[-63.3,2.9],[41.8,2.8],[-75.7,2.7],[114.4,2.7],[29.4,2.7],[-55.6,2.7],[102,2.6],[17,2.6],[-68,2.5],[37.1,2.5],[24.7,2.4],[-60.3,2.3],[44.7,2.3],[12.3,2.2],[-72.7,2.2],[117.3,2.2],[32.3,2.2],[-52.7,2.1],[19.9,2],[-65.1,2],[40,2],[-77.5,1.9],[112.6,1.9],[27.6,1.8],[-57.4,1.8],[100.2,1.7],[15.2,1.7],[-69.8,1.7],[35.2,1.6],[22.8,1.5],[-62.1,1.5],[127.9,1.5],[42.9,1.4],[10.5,1.4],[-74.5,1.4],[115.5,1.3],[30.5,1.3],[-54.5,1.3],[18.1,1.2],[-66.9,1.2],[38.2,1.1],[-79.3,1],[110.8,1],[25.8,1],[-59.2,1],[13.4,0.9],[-71.6,0.8],[33.4,0.8],[-51.5,0.8],[21,0.7],[-63.9,0.6],[41.1,0.6],[-76.3,0.5],[113.7,0.5],[28.7,0.5],[-56.3,0.4],[101.3,0.4],[16.3,0.3],[-68.7,0.3],[36.4,0.3],[24,0.1],[-61,0.1],[11.6,0],[-73.4,0],[116.6,0],[31.6,-0.1],[-53.4,-0.1],[19.2,-0.2],[-65.8,-0.2],[39.3,-0.3],[-78.2,-0.3],[111.9,-0.4],[26.9,-0.4],[-58.1,-0.4],[14.5,-0.5],[-70.5,-0.5],[34.6,-0.6],[-50.4,-0.6],[22.2,-0.7],[-62.8,-0.7],[9.8,-0.8],[-75.2,-0.9],[114.8,-0.9],[29.8,-0.9],[-55.2,-0.9],[102.4,-1],[17.4,-1],[-67.6,-1.1],[122.5,-1.1],[37.5,-1.1],[-47.5,-1.1],[-80,-1.2],[110.1,-1.2],[25.1,-1.2],[-59.9,-1.3],[12.7,-1.4],[-72.3,-1.4],[32.7,-1.4],[-52.2,-1.5],[20.3,-1.6],[-64.6,-1.6],[40.4,-1.6],[-77,-1.7],[113,-1.7],[28,-1.8],[-57,-1.8],[133.1,-1.8],[15.6,-1.9],[-69.4,-1.9],[120.7,-1.9],[35.7,-2],[-49.3,-2],[23.3,-2.1],[-61.7,-2.1],[10.9,-2.2],[-74.1,-2.2],[115.9,-2.3],[30.9,-2.3],[-54,-2.3],[103.5,-2.4],[18.5,-2.4],[-66.4,-2.4],[38.6,-2.5],[-46.4,-2.5],[-78.8,-2.6],[111.2,-2.6],[26.2,-2.6],[-58.8,-2.6],[13.8,-2.7],[151.3,-2.7],[-71.2,-2.8],[118.9,-2.8],[33.9,-2.8],[-51.1,-2.8],[138.9,-2.9],[21.5,-2.9],[-63.5,-3],[-43.5,-3],[-75.9,-3.1],[114.1,-3.1],[29.1,-3.1],[-55.9,-3.2],[134.2,-3.2],[16.7,-3.3],[-68.3,-3.3],[121.8,-3.3],[36.8,-3.3],[-48.2,-3.4],[141.8,-3.4],[24.4,-3.5],[-60.6,-3.5],[-40.5,-3.6],[12,-3.6],[-73,-3.6],[32.1,-3.7],[-52.9,-3.7],[137.1,-3.7],[104.6,-3.8],[19.7,-3.8],[-65.3,-3.8],[39.7,-3.9],[-45.3,-3.9],[-77.7,-3.9],[27.3,-4],[-57.7,-4],[14.9,-4.1],[-70.1,-4.1],[120,-4.2],[35,-4.2],[-50,-4.2],[140,-4.2],[22.6,-4.3],[-62.4,-4.3],[-42.3,-4.4],[-74.8,-4.5],[30.2,-4.5],[-54.7,-4.5],[17.8,-4.6],[-67.1,-4.7],[122.9,-4.7],[37.9,-4.7],[-47.1,-4.7],[143,-4.8],[-79.5,-4.8],[25.5,-4.8],[-59.5,-4.9],[-39.4,-4.9],[13.1,-5],[-71.9,-5],[33.2,-5],[-51.8,-5.1],[138.2,-5.1],[105.8,-5.1],[20.8,-5.2],[-64.2,-5.2],[-44.1,-5.3],[145.9,-5.3],[-76.6,-5.3],[28.4,-5.4],[-56.5,-5.4],[-36.5,-5.5],[16,-5.5],[-68.9,-5.5],[36.1,-5.6],[-48.9,-5.6],[141.1,-5.6],[23.7,-5.7],[-61.3,-5.7],[-41.2,-5.8],[148.8,-5.8],[-73.7,-5.8],[31.4,-5.9],[-53.6,-5.9],[19,-6],[-66,-6],[-46,-6.1],[144.1,-6.2],[-78.4,-6.2],[26.6,-6.2],[-58.4,-6.2],[-38.3,-6.3],[14.2,-6.3],[-70.8,-6.4],[34.3,-6.4],[-50.7,-6.4],[139.3,-6.5],[106.9,-6.5],[21.9,-6.6],[-63.1,-6.6],[-43,-6.6],[147,-6.7],[-75.5,-6.7],[29.6,-6.8],[-55.4,-6.8],[-35.4,-6.8],[17.2,-6.9],[-67.8,-6.9],[37.2,-7],[-47.8,-7],[142.3,-7],[109.8,-7.1],[24.8,-7.1],[-60.2,-7.1],[-40.1,-7.2],[-72.6,-7.2],[32.5,-7.3],[-52.5,-7.3],[20.1,-7.4],[-64.9,-7.4],[-44.8,-7.5],[145.2,-7.5],[-77.3,-7.6],[112.7,-7.6],[27.7,-7.6],[-57.2,-7.6],[-37.2,-7.7],[15.3,-7.7],[-69.6,-7.8],[35.4,-7.8],[-49.6,-7.8],[140.5,-7.9],[23,-7.9],[-62,-8],[-41.9,-8],[-74.4,-8.1],[30.7,-8.1],[-54.3,-8.2],[18.3,-8.3],[-66.7,-8.3],[38.3,-8.3],[-46.6,-8.4],[25.9,-8.5],[-59,-8.5],[-39,-8.6],[13.5,-8.6],[-71.4,-8.6],[118.6,-8.7],[33.6,-8.7],[-51.4,-8.7],[21.2,-8.8],[-63.8,-8.8],[126.3,-8.9],[-43.7,-8.9],[-76.2,-8.9],[28.9,-9],[-56.1,-9],[-36.1,-9.1],[16.5,-9.1],[-68.5,-9.1],[36.5,-9.2],[-48.5,-9.2],[24.1,-9.3],[-60.9,-9.3],[-40.8,-9.4],[149.2,-9.5],[-73.3,-9.5],[31.8,-9.5],[-53.2,-9.6],[19.4,-9.7],[-65.6,-9.7],[124.4,-9.7],[39.5,-9.7],[-45.5,-9.8],[-78,-9.8],[27.1,-9.9],[-57.9,-9.9],[-37.9,-10],[14.7,-10],[-70.3,-10],[34.7,-10.1],[-50.3,-10.1],[22.3,-10.2],[-62.7,-10.2],[-42.6,-10.3],[-75.1,-10.3],[30,-10.4],[-55,-10.4],[17.6,-10.5],[-67.4,-10.5],[37.6,-10.6],[-47.3,-10.6],[25.2,-10.7],[-59.7,-10.7],[-39.7,-10.8],[-72.1,-10.9],[32.9,-10.9],[-52.1,-10.9],[20.5,-11.1],[-64.5,-11.1],[-44.4,-11.2],[-76.9,-11.2],[28.2,-11.3],[-56.8,-11.3],[15.8,-11.4],[-69.2,-11.4],[35.8,-11.5],[-49.1,-11.5],[23.4,-11.6],[-61.5,-11.6],[-41.5,-11.7],[-73.9,-11.7],[31.1,-11.8],[-53.9,-11.8],[18.7,-11.9],[-66.3,-11.9],[38.8,-12],[-46.2,-12],[26.4,-12.1],[-58.6,-12.1],[-38.6,-12.2],[14,-12.3],[-71,-12.3],[34,-12.3],[-51,-12.4],[21.6,-12.5],[-63.4,-12.5],[-43.3,-12.6],[-75.8,-12.6],[29.3,-12.7],[-55.7,-12.7],[134.3,-12.7],[49.4,-12.7],[16.9,-12.8],[-68.1,-12.8],[37,-12.9],[-48,-12.9],[142,-12.9],[24.6,-13],[-60.4,-13],[-40.4,-13.1],[-72.8,-13.1],[32.2,-13.2],[-52.8,-13.2],[19.8,-13.3],[-65.2,-13.4],[39.9,-13.4],[-45.1,-13.4],[27.5,-13.5],[-57.5,-13.6],[132.5,-13.6],[15.1,-13.7],[-69.9,-13.7],[35.1,-13.7],[-49.8,-13.8],[22.7,-13.9],[-62.2,-13.9],[-42.2,-14],[-74.6,-14],[30.4,-14.1],[-54.6,-14.1],[135.5,-14.1],[18,-14.2],[-67,-14.2],[38.1,-14.3],[-46.9,-14.3],[143.1,-14.3],[25.7,-14.4],[-59.3,-14.4],[130.7,-14.5],[-39.2,-14.5],[13.3,-14.5],[-71.7,-14.6],[33.3,-14.6],[-51.6,-14.6],[20.9,-14.8],[-64,-14.8],[126,-14.8],[-44,-14.8],[28.6,-15],[-56.4,-15],[133.6,-15],[48.7,-15],[16.2,-15.1],[-68.8,-15.1],[36.3,-15.2],[-48.7,-15.2],[23.9,-15.3],[-61.1,-15.3],[128.9,-15.4],[-41.1,-15.4],[-73.5,-15.4],[31.5,-15.5],[-53.5,-15.5],[19.1,-15.6],[-65.9,-15.7],[39.2,-15.7],[-45.8,-15.7],[144.2,-15.8],[26.8,-15.8],[-58.2,-15.9],[131.8,-15.9],[46.9,-15.9],[14.4,-16],[-70.6,-16],[34.5,-16],[-50.5,-16.1],[22.1,-16.2],[-62.9,-16.2],[127.1,-16.2],[179.6,-16.3],[-42.9,-16.3],[29.7,-16.4],[-55.3,-16.4],[134.8,-16.4],[49.8,-16.5],[17.3,-16.5],[-67.7,-16.5],[37.4,-16.6],[-47.6,-16.6],[142.4,-16.7],[25,-16.7],[-60,-16.7],[130,-16.8],[45,-16.8],[-39.9,-16.8],[12.6,-16.9],[-72.4,-16.9],[32.6,-16.9],[-52.3,-17],[137.7,-17],[20.2,-17.1],[-64.7,-17.1],[125.3,-17.1],[-44.7,-17.2],[145.4,-17.2],[27.9,-17.3],[-57.1,-17.3],[133,-17.3],[48,-17.4],[15.5,-17.4],[-69.5,-17.4],[35.6,-17.5],[-49.4,-17.5],[140.6,-17.5],[23.2,-17.6],[-61.8,-17.6],[128.2,-17.7],[-41.7,-17.7],[30.8,-17.8],[-54.1,-17.8],[135.9,-17.9],[18.4,-18],[-66.5,-18],[123.5,-18],[-46.5,-18.1],[143.5,-18.1],[26.1,-18.2],[-58.9,-18.2],[131.1,-18.2],[46.2,-18.2],[13.7,-18.3],[33.8,-18.4],[-51.2,-18.4],[138.8,-18.4],[21.4,-18.5],[-63.6,-18.5],[126.4,-18.6],[-43.6,-18.6],[29,-18.7],[-56,-18.7],[134.1,-18.8],[49.1,-18.8],[16.6,-18.9],[-68.4,-18.9],[121.7,-18.9],[-48.3,-19],[141.7,-19],[24.3,-19.1],[-60.7,-19.1],[129.3,-19.1],[44.4,-19.1],[-40.6,-19.2],[32,-19.3],[-53,-19.3],[137,-19.3],[19.6,-19.4],[-65.4,-19.4],[124.6,-19.5],[-45.4,-19.5],[144.7,-19.5],[27.2,-19.6],[-57.8,-19.6],[132.3,-19.7],[47.3,-19.7],[14.8,-19.8],[-50.1,-19.9],[139.9,-19.9],[22.5,-20],[-62.5,-20],[127.5,-20],[-42.4,-20.1],[147.6,-20.1],[30.1,-20.2],[-54.8,-20.2],[135.2,-20.2],[17.7,-20.3],[-67.2,-20.3],[122.8,-20.4],[-47.2,-20.4],[142.9,-20.5],[25.4,-20.5],[-59.6,-20.5],[130.5,-20.6],[45.5,-20.6],[118.1,-20.7],[33.1,-20.7],[-51.9,-20.8],[138.1,-20.8],[20.7,-20.9],[-64.3,-20.9],[125.7,-20.9],[-44.2,-21],[145.8,-21],[28.3,-21.1],[-56.6,-21.1],[133.4,-21.1],[15.9,-21.2],[-69,-21.2],[121,-21.3],[-49,-21.3],[141,-21.4],[23.6,-21.4],[-61.4,-21.5],[128.6,-21.5],[43.7,-21.5],[-41.3,-21.5],[148.7,-21.6],[116.3,-21.6],[31.3,-21.7],[-53.7,-21.7],[136.3,-21.7],[18.9,-21.8],[-66.1,-21.8],[123.9,-21.8],[-46.1,-21.9],[144,-21.9],[26.5,-22],[-58.5,-22],[131.6,-22.1],[46.6,-22.1],[119.2,-22.2],[34.2,-22.2],[-50.8,-22.2],[139.2,-22.3],[21.8,-22.4],[-63.2,-22.4],[126.8,-22.4],[-43.1,-22.5],[146.9,-22.5],[114.4,-22.5],[29.5,-22.6],[-55.5,-22.6],[134.5,-22.6],[17.1,-22.7],[-67.9,-22.7],[122.1,-22.8],[-47.9,-22.8],[142.2,-22.8],[24.7,-22.9],[-60.3,-22.9],[129.8,-23],[44.8,-23],[149.8,-23.1],[117.4,-23.1],[32.4,-23.1],[-52.6,-23.2],[137.4,-23.2],[20,-23.3],[-65,-23.3],[125,-23.3],[-44.9,-23.4],[145.1,-23.4],[27.6,-23.5],[-57.3,-23.5],[132.7,-23.6],[15.2,-23.6],[-69.7,-23.6],[120.3,-23.7],[35.3,-23.7],[-49.7,-23.7],[140.4,-23.8],[22.9,-23.8],[-62.1,-23.9],[128,-23.9],[148,-24],[115.6,-24],[30.6,-24.1],[-54.4,-24.1],[135.6,-24.1],[18.2,-24.2],[-66.8,-24.2],[123.2,-24.3],[143.3,-24.3],[25.8,-24.4],[-59.1,-24.4],[130.9,-24.5],[45.9,-24.5],[150.9,-24.6],[118.5,-24.6],[33.5,-24.6],[-51.5,-24.7],[138.5,-24.7],[21.1,-24.8],[-63.9,-24.8],[126.1,-24.8],[146.2,-24.9],[113.8,-25],[28.8,-25],[-56.2,-25],[133.8,-25.1],[16.4,-25.1],[-68.6,-25.2],[121.4,-25.2],[-48.6,-25.2],[141.5,-25.3],[24,-25.4],[-61,-25.4],[129.1,-25.4],[149.1,-25.5],[116.7,-25.6],[31.7,-25.6],[-53.3,-25.6],[136.7,-25.6],[19.3,-25.7],[-65.7,-25.7],[124.3,-25.8],[144.4,-25.9],[27,-25.9],[-58,-26],[132,-26],[152.1,-26.1],[-70.4,-26.1],[119.6,-26.1],[-50.4,-26.2],[139.7,-26.2],[22.2,-26.3],[-62.8,-26.3],[127.3,-26.4],[147.3,-26.5],[114.9,-26.5],[29.9,-26.5],[-55.1,-26.5],[134.9,-26.6],[17.5,-26.7],[-67.5,-26.7],[122.5,-26.7],[142.6,-26.8],[25.1,-26.9],[-59.8,-26.9],[130.2,-27],[150.3,-27],[117.8,-27.1],[-52.2,-27.1],[137.9,-27.2],[20.4,-27.3],[-64.6,-27.3],[125.5,-27.3],[145.5,-27.4],[28.1,-27.5],[-56.9,-27.5],[133.1,-27.5],[15.7,-27.6],[153.2,-27.6],[-69.3,-27.6],[120.7,-27.7],[-49.2,-27.7],[140.8,-27.8],[23.3,-27.8],[-61.6,-27.9],[128.4,-27.9],[148.4,-28],[116,-28.1],[31,-28.1],[-54,-28.1],[136,-28.1],[18.6,-28.2],[-66.4,-28.2],[123.6,-28.3],[143.7,-28.4],[26.3,-28.4],[-58.7,-28.5],[131.3,-28.5],[151.4,-28.6],[-71.1,-28.6],[118.9,-28.6],[-51.1,-28.7],[139,-28.7],[21.5,-28.8],[-63.5,-28.8],[126.6,-28.9],[146.6,-29],[29.2,-29],[-55.8,-29.1],[134.2,-29.1],[16.8,-29.2],[-68.2,-29.2],[121.8,-29.3],[141.9,-29.3],[24.5,-29.4],[-60.5,-29.4],[129.5,-29.5],[149.6,-29.6],[117.1,-29.6],[-52.9,-29.7],[137.2,-29.7],[19.7,-29.8],[-65.3,-29.8],[124.8,-29.9],[144.8,-29.9],[27.4,-30],[-57.6,-30],[132.4,-30.1],[152.5,-30.2],[-70,-30.2],[120,-30.2],[140.1,-30.3],[22.6,-30.4],[-62.3,-30.4],[127.7,-30.5],[147.8,-30.6],[115.3,-30.6],[30.3,-30.6],[-54.7,-30.7],[135.4,-30.7],[17.9,-30.8],[-67.1,-30.8],[123,-30.8],[143,-30.9],[25.6,-31],[-59.4,-31],[130.6,-31.1],[150.7,-31.2],[118.2,-31.2],[-51.7,-31.3],[138.3,-31.3],[20.8,-31.4],[-64.1,-31.4],[125.9,-31.5],[145.9,-31.5],[28.5,-31.6],[-56.5,-31.6],[133.5,-31.7],[-68.9,-31.8],[121.1,-31.8],[141.2,-31.9],[23.8,-32],[-61.2,-32],[148.9,-32.2],[116.4,-32.2],[-53.6,-32.3],[136.5,-32.3],[19,-32.4],[-66,-32.4],[124.1,-32.5],[144.1,-32.5],[26.7,-32.6],[-58.3,-32.6],[151.8,-32.8],[-70.7,-32.8],[119.3,-32.8],[139.4,-32.9],[22,-33],[-63,-33],[147.1,-33.2],[-55.4,-33.3],[-67.8,-33.4],[122.3,-33.5],[142.3,-33.6],[24.9,-33.6],[-60.1,-33.7],[150,-33.8],[117.5,-33.9],[20.1,-34],[-64.8,-34.1],[145.3,-34.2],[-57.2,-34.3],[-69.6,-34.4],[173,-34.5],[140.5,-34.6],[-61.9,-34.7],[148.2,-34.8],[-66.6,-35.1],[143.4,-35.2],[-59,-35.3],[-71.4,-35.5],[138.7,-35.6],[-63.7,-35.7],[146.4,-35.9],[-68.5,-36.1],[174.1,-36.2],[141.6,-36.3],[-60.8,-36.4],[149.3,-36.5],[-65.5,-36.8],[144.6,-36.9],[-57.9,-37],[-70.3,-37.2],[-62.6,-37.4],[147.5,-37.6],[-67.3,-37.9],[175.2,-37.9],[142.8,-38],[-59.7,-38.1],[-72.1,-38.3],[-64.4,-38.5],[178.1,-38.6],[145.7,-38.7],[-69.1,-38.9],[-66.2,-39.6],[176.3,-39.7],[-71,-40],[-63.3,-40.3],[-68,-40.7],[-72.8,-41.2],[-65.1,-41.4],[145,-41.6],[-69.8,-41.9],[172.7,-41.9],[147.9,-42.3],[-66.9,-42.6],[-71.6,-43],[170.9,-43.1],[146.1,-43.4],[-68.7,-43.7],[169.1,-44.3],[-65.8,-44.5],[-70.5,-44.9],[167.3,-45.5],[-67.6,-45.7],[-72.3,-46.1],[-69.4,-46.9],[-74.1,-47.4],[-66.5,-47.7],[-71.2,-48.2],[-68.3,-49],[69.2,-49],[-73,-49.4],[-70.1,-50.3],[-74.8,-50.8],[-59.5,-51.4],[-71.9,-51.6],[-70.8,-53.9],[-67.9,-54.8],[-63.4,-65.9],[114.2,-66.3],[134.3,-66.5],[101.8,-66.6],[121.9,-66.8],[142,-67],[57,-67.1],[109.5,-67.1],[129.6,-67.3],[97.1,-67.5],[64.6,-67.6],[117.2,-67.7],[84.7,-67.8],[137.2,-67.9],[52.2,-67.9],[104.8,-68],[124.8,-68.2],[92.4,-68.3],[144.9,-68.4],[59.9,-68.5],[112.4,-68.5],[80,-68.7],[132.5,-68.7],[47.5,-68.8],[100,-68.9],[152.6,-69],[67.6,-69],[120.1,-69.1],[35.1,-69.1],[87.6,-69.2],[140.2,-69.3],[55.2,-69.4],[107.7,-69.4],[127.8,-69.7],[42.8,-69.7],[95.3,-69.8],[147.8,-69.9],[62.8,-69.9],[115.4,-70],[30.4,-70.1],[82.9,-70.2],[135.4,-70.2],[50.4,-70.3],[103,-70.4],[18,-70.4],[155.5,-70.5],[-67,-70.5],[123,-70.6],[38,-70.7],[90.6,-70.8],[5.6,-70.8],[143.1,-70.8],[58.1,-70.9],[110.6,-71],[25.6,-71.1],[163.1,-71.1],[78.2,-71.1],[-6.8,-71.2],[130.7,-71.2],[45.7,-71.3],[98.2,-71.4],[13.2,-71.4],[150.7,-71.5],[-71.7,-71.5],[65.8,-71.5],[118.3,-71.6],[33.3,-71.7],[170.8,-71.7],[85.8,-71.8],[0.8,-71.8],[138.3,-71.9],[53.4,-71.9],[105.9,-72],[20.9,-72.1],[158.4,-72.1],[-64.1,-72.1],[73.4,-72.2],[-11.6,-72.2],[125.9,-72.3],[-96.5,-72.3],[41,-72.3],[93.5,-72.4],[8.5,-72.5],[146,-72.5],[61,-72.6],[113.5,-72.7],[28.6,-72.7],[166.1,-72.8],[81.1,-72.8],[-3.9,-72.9],[133.6,-72.9],[-88.9,-73],[48.6,-73],[101.1,-73.1],[16.2,-73.2],[153.7,-73.2],[-68.8,-73.2],[68.7,-73.3],[121.2,-73.4],[-101.3,-73.4],[36.2,-73.4],[88.8,-73.5],[3.8,-73.6],[141.3,-73.6],[56.3,-73.7],[108.8,-73.8],[23.8,-73.9],[161.3,-73.9],[76.4,-74],[-8.6,-74],[128.9,-74.1],[-93.6,-74.1],[43.9,-74.2],[96.4,-74.3],[11.4,-74.3],[148.9,-74.4],[-73.6,-74.4],[64,-74.4],[116.5,-74.5],[31.5,-74.6],[84,-74.7],[-1,-74.8],[136.5,-74.8],[-86,-74.9],[51.6,-74.9],[104.1,-75],[-118.4,-75.1],[19.1,-75.1],[156.6,-75.1],[-65.9,-75.2],[71.6,-75.2],[-13.4,-75.3],[124.1,-75.3],[-98.4,-75.4],[39.2,-75.4],[91.7,-75.5],[-130.8,-75.5],[6.7,-75.6],[144.2,-75.6],[-78.3,-75.7],[59.2,-75.7],[111.7,-75.8],[-110.8,-75.9],[26.8,-75.9],[79.3,-76],[-143.2,-76],[-5.7,-76.1],[131.8,-76.1],[-90.7,-76.2],[46.8,-76.2],[99.3,-76.3],[-123.2,-76.4],[14.4,-76.4],[151.9,-76.4],[-70.6,-76.5],[66.9,-76.5],[-18.1,-76.6],[119.4,-76.7],[-103.1,-76.7],[34.4,-76.7],[86.9,-76.9],[-135.6,-76.9],[2,-76.9],[139.5,-77],[-83,-77],[54.5,-77.1],[107,-77.2],[-115.5,-77.2],[22,-77.3],[159.5,-77.3],[74.5,-77.4],[-147.9,-77.5],[-10.4,-77.5],[127.1,-77.6],[-95.4,-77.6],[42.1,-77.6],[94.6,-77.8],[-127.9,-77.8],[9.6,-77.9],[147.1,-77.9],[-75.4,-78],[62.1,-78],[-22.8,-78.1],[114.7,-78.1],[-107.8,-78.2],[29.7,-78.2],[82.2,-78.4],[-140.3,-78.4],[-2.8,-78.5],[134.7,-78.5],[-87.8,-78.6],[49.7,-78.6],[-35.2,-78.7],[102.3,-78.8],[-120.2,-78.8],[17.3,-78.9],[154.8,-78.9],[69.8,-79],[-152.7,-79.1],[-15.2,-79.1],[122.3,-79.2],[-100.2,-79.2],[37.3,-79.3],[-47.6,-79.4],[89.9,-79.4],[-132.6,-79.5],[4.9,-79.5],[142.4,-79.6],[-80.1,-79.6],[57.4,-79.7],[-27.6,-79.8],[109.9,-79.8],[-112.6,-79.9],[24.9,-80],[-60,-80.1],[77.5,-80.1],[-145,-80.2],[-7.5,-80.2],[130,-80.3],[-92.5,-80.3],[45,-80.4],[97.5,-80.6],[-125,-80.6],[12.5,-80.7],[150.1,-80.8],[-72.4,-80.8],[65.1,-80.9],[-19.9,-81],[117.6,-81.1],[-104.9,-81.1],[32.6,-81.2],[85.1,-81.4],[-137.4,-81.4],[0.1,-81.5],[137.7,-81.6],[-84.8,-81.6],[52.7,-81.7],[-32.3,-81.8],[105.2,-81.9],[-117.3,-82],[20.2,-82],[157.7,-82.1],[-64.8,-82.2],[72.7,-82.2],[-149.8,-82.3],[-12.3,-82.4],[125.3,-82.5],[-97.2,-82.5],[40.3,-82.6],[-44.7,-82.7],[92.8,-82.8],[-129.7,-82.9],[7.8,-83],[145.3,-83.1],[-77.2,-83.1],[60.3,-83.2],[-24.6,-83.4],[112.9,-83.5],[-109.6,-83.5],[27.9,-83.6],[165.4,-83.7],[-57.1,-83.8],[80.4,-83.9],[-142.1,-84],[-4.6,-84.1],[132.9,-84.2],[-89.6,-84.3],[47.9,-84.4],[-37,-84.6],[100.5,-84.7],[-122,-84.8],[15.5,-84.9],[153,-85],[-69.5,-85.1],[68,-85.2],[-154.5,-85.3],[-17,-85.4],[120.5,-85.6],[-102,-85.7],[35.5,-85.8],[173,-85.9],[-49.4,-86.1],[88.1,-86.2],[-134.4,-86.4],[3.1,-86.5],[140.6,-86.7],[-81.9,-86.9],[55.6,-87],[-166.9,-87.2],[-29.4,-87.4],[108.1,-87.7],[-114.4,-87.9],[23.1,-88.2],[160.6,-88.5],[-61.8,-89],[0,-90]];
+const C = { acero: '#0F2237', celeste: '#74ACDF', profundo: '#2F80C2', dorado: '#F6B40E', tonos: ['#19324F', '#1B3555', '#1E395B'], sc: '#2A5F93' };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v, a = 0, b = 1) => v < a ? a : v > b ? b : v;
+const smooth = t => { t = clamp(t); return t * t * (3 - 2 * t); };
+const expo = t => { t = clamp(t); return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); };
+const back = t => { t = clamp(t); const c = 1.4; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const inout = t => { t = clamp(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+const lerp = (a, b, t) => a + (b - a) * t;
+const TAU = Math.PI * 2, D2R = Math.PI / 180;
+
+// ---------- Datos ----------
+const RG = HEX.rg;
+// Integrantes de la red (actualizado 15/11/2026). c = ciudad, r = rol, d = descripción breve, u = web
+const INST = [
+  { e: ['Institucional','RSE'], n: 'Fundación Sembrando Esperanzas', c: 'Caleta Olivia', r: 'Convoca', d: 'Convoca la primera edición del foro y es el respaldo institucional de la red.' },
+  { e: ['Institucional'], n: 'Gobierno de Santa Cruz', c: 'Río Gallegos', r: 'Acompaña', d: 'Acompaña el foro y cede el Complejo Cultural de Río Gallegos.' },
+  { e: ['Institucional'], n: 'Comisión de Industria · Cámara de Diputados de la Nación', s: 'Comisión de Industria', c: 'CABA', r: 'Acompaña', d: 'Acompaña la primera edición del foro.' },
+  { e: ['Industria de la cultura'], n: 'MDA Agencia de Comunicación', s: 'MDA', c: 'Río Gallegos', r: 'Comunicación', d: 'Agencia de comunicación de la red ConexIA.' },
+  { e: ['Gastronomía'], n: 'La Casona 1930', c: 'Río Gallegos', r: 'Integra la red', d: 'Integra la red desde Río Gallegos.' },
+  { e: ['Industria de la cultura'], n: 'ADN Agencia de Marketing', s: 'ADN', c: 'Río Gallegos', r: 'Integra la red', d: 'Agencia de marketing: redes sociales, producción audiovisual, branding y pauta digital.', u: 'https://adnagencia.com.ar/' },
+  { e: ['Hidrocarburos','Minería','Energía'], n: 'CAPPEMA', c: 'Río Gallegos', r: 'Integra la red', d: 'Cámara de Proveedores de Insumos y Prestadores de Servicios de los Sectores Petrolero, Minero, Energético y Ambiental de Santa Cruz.' },
+  { e: ['Educación'], n: 'Universidad Siglo 21 · CAU Río Gallegos', s: 'Siglo 21', c: 'Río Gallegos', r: 'Integra la red', d: 'Centro de Aprendizaje Universitario de la Universidad Siglo 21 en Río Gallegos.' },
+  { e: ['Gastronomía','Turismo'], n: 'Calafate Ahumados', c: 'El Calafate', r: 'Integra la red', d: 'Integra la red desde El Calafate.' },
+  { e: ['Educación'], n: 'Fundación Talita Kum', s: 'Talita Kum', c: 'El Calafate', r: 'Integra la red', d: 'Fundación con sede en El Calafate.' },
+  { e: ['Educación','Inteligencia artificial'], n: 'Instituto Patagónico de Nuevas Tecnologías', s: 'Inst. Patagónico de Nuevas Tecnologías', lb: 'Inst. Patagónico', c: 'Perito Moreno', r: 'Integra la red', d: 'Instituto con sede en Perito Moreno.' },
+  { e: ['Educación'], n: 'Fundación de Estudios Patagónicos', s: 'Estudios Patagónicos', c: 'Neuquén', r: 'Integra la red', d: 'Fundación con sede en Neuquén.' },
+  { e: ['Comercio exterior'], n: 'MID Importaciones', s: 'MID', c: 'CABA', r: 'Integra la red', d: 'Empresa de importaciones con sede en la Ciudad de Buenos Aires.' },
+  { e: ['Educación'], n: 'Fundación Unión Internacional de Jóvenes (IYF) Argentina', s: 'IYF Argentina', c: 'CABA', r: 'Integra la red', d: 'Sede Villa Luro, Ciudad de Buenos Aires.' },
+  { e: ['Comercio exterior'], n: 'Cámara de Comercio Boliviana en Argentina', s: 'Cámara de Comercio Boliviana', c: 'CABA', r: 'Integra la red', d: 'Cámara con sede en la Ciudad de Buenos Aires.' },
+  { e: ['Comercio exterior'], n: 'Cámara Latinoamericana de Intercambio Comercial', s: 'Cámara Latinoamericana', c: 'CABA', r: 'Integra la red', d: 'Cámara con sede en la Ciudad de Buenos Aires.' },
+  { e: ['Blockchain'], n: 'Fundación Cardano en Argentina', s: 'Fundación Cardano', c: 'CABA', r: 'Integra la red', d: 'Con sede en la Ciudad de Buenos Aires.' },
+];
+// Posición de cada integrante: alrededor del punto de su ciudad, en un anillo si comparten ciudad
+const CITY = HEX.city, PLACES = ['Río Gallegos', 'Caleta Olivia', 'El Calafate', 'Perito Moreno', 'Neuquén', 'CABA'];
+(() => { const by = {}; INST.forEach(m => (by[m.c] = by[m.c] || []).push(m));
+  for (const c in by) { const L = by[c], n = L.length, rad = n === 1 ? 0 : 7 + n * 1.6; L.forEach((m, k) => { const a = -Math.PI / 2 + k * TAU / n; m.x = CITY[c][0] + Math.cos(a) * rad; m.y = CITY[c][1] + Math.sin(a) * rad; m.s = m.s || m.n; }); } })();
+const GROUPS = [['Santa Cruz', ['Río Gallegos', 'Caleta Olivia', 'El Calafate', 'Perito Moreno']], ['Ciudad de Buenos Aires', ['CABA']], ['Neuquén', ['Neuquén']]];
+
+const EJES = [
+  ['Energía', 'La energía define qué se puede producir y dónde.'],
+  ['Hidrocarburos', 'Sostienen economías regionales y una red de empresas proveedoras.'],
+  ['Minería', 'Genera trabajo en el interior y demanda servicios de empresas locales.'],
+  ['Blockchain', 'Nuevas formas de registrar y certificar operaciones entre empresas.'],
+  ['Inteligencia artificial', 'Herramientas para producir mejor, aplicadas a la industria.'],
+  ['Industria de la cultura', 'La producción cultural también es industria y trabajo.'],
+  ['Turismo', 'Una industria que conecta territorio, servicios y empleo.'],
+  ['Educación', 'Formar en los perfiles que la industria necesita.'],
+  ['RSE', 'Empresas que crecen junto a su comunidad.'],
+];
+const PROV = Object.keys(HEX.prov);
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const DEMO = Array.from({ length: 46 }, (_, i) => {
+  const p = PROV[Math.floor(rnd() * PROV.length)], [x, y] = HEX.prov[p], e = Math.floor(rnd() * EJES.length);
+  return { x: x + (rnd() - .5) * 50, y: y + (rnd() - .5) * 50, p, e, rubro: EJES[e][0], n: 'Empresa de ejemplo ' + (i + 1), ph: rnd() * TAU };
+});
+const LINKS = Array.from({ length: 16 }, () => [Math.floor(rnd() * DEMO.length), Math.floor(rnd() * DEMO.length)]).filter(([a, b]) => a !== b);
+
+// Ajuste lineal mapa → lat/lon para el lector de coordenadas
+const GEO = { 'Buenos Aires': [-57.95, -34.92], 'CABA': [-58.38, -34.60], 'Catamarca': [-65.78, -28.47], 'Chaco': [-58.98, -27.45], 'Chubut': [-65.10, -43.30], 'Córdoba': [-64.18, -31.42], 'Corrientes': [-58.83, -27.47], 'Entre Ríos': [-60.52, -31.73], 'Formosa': [-58.17, -26.18], 'Jujuy': [-65.30, -24.19], 'La Pampa': [-64.29, -36.62], 'La Rioja': [-66.85, -29.41], 'Mendoza': [-68.84, -32.89], 'Misiones': [-55.90, -27.37], 'Neuquén': [-68.06, -38.95], 'Río Negro': [-63.00, -40.81], 'Salta': [-65.41, -24.79], 'San Juan': [-68.54, -31.54], 'San Luis': [-66.34, -33.30], 'Santa Cruz': [-69.22, -51.62], 'Santa Fe': [-60.70, -31.63], 'Santiago del Estero': [-64.26, -27.80], 'Tierra del Fuego': [-68.30, -54.80], 'Tucumán': [-65.22, -26.82] };
+const FIT = (() => {
+  const rows = PROV.map(p => [HEX.prov[p][0], HEX.prov[p][1], 1]), solve = k => {
+    const A = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], b = [0, 0, 0];
+    rows.forEach((r, i) => { const v = GEO[PROV[i]][k]; for (let a = 0; a < 3; a++) { b[a] += r[a] * v; for (let c = 0; c < 3; c++) A[a][c] += r[a] * r[c]; } });
+    for (let i = 0; i < 3; i++) { for (let j = i + 1; j < 3; j++) { const f = A[j][i] / A[i][i]; for (let c = i; c < 3; c++) A[j][c] -= f * A[i][c]; b[j] -= f * b[i]; } }
+    const x = [0, 0, 0]; for (let i = 2; i >= 0; i--) { let s = b[i]; for (let c = i + 1; c < 3; c++) s -= A[i][c] * x[c]; x[i] = s / A[i][i]; } return x;
+  };
+  return [solve(0), solve(1)];
+})();
+const fmt = (v, pos, neg) => { const a = Math.abs(v), d = Math.floor(a), m = Math.round((a - d) * 60); return `${d}°${String(m === 60 ? 0 : m).padStart(2, '0')}′ ${v < 0 ? neg : pos}`; };
+
+// ---------- Geometría precomputada ----------
+const HR = HEX.R * 0.88;
+const HEXOFF = Array.from({ length: 6 }, (_, i) => { const a = D2R * (60 * i - 90); return [Math.cos(a), Math.sin(a)]; });
+function addHex(p, x, y, r = HR) { p.moveTo(x + HEXOFF[0][0] * r, y + HEXOFF[0][1] * r); for (let i = 1; i < 6; i++) p.lineTo(x + HEXOFF[i][0] * r, y + HEXOFF[i][1] * r); p.closePath(); }
+const P = { small: new Path2D(), all: new Path2D(), tono: C.tonos.map(() => new Path2D()), tw: Array.from({ length: 6 }, () => new Path2D()) };
+const distRG = (x, y) => Math.hypot(x - RG[0], y - RG[1]);
+const SC_CELLS = [], EJE_CELLS = EJES.map(() => []);
+HEX.cells.forEach(([x, y, k]) => {
+  addHex(P.all, x, y);
+  addHex(P.small, x, y, HR * .38);
+  addHex(P.tono[Math.floor(rnd() * 3)], x, y);
+  if (k === 1) SC_CELLS.push([x, y, distRG(x, y)]);
+  if (rnd() < .2) addHex(P.tw[Math.floor(rnd() * 6)], x, y);
+  EJES.forEach((_, e) => { if (rnd() < .055) EJE_CELLS[e].push([x, y, distRG(x, y)]); });
+});
+[SC_CELLS, ...EJE_CELLS].forEach(l => l.sort((a, b) => a[2] - b[2]));
+const scC = SC_CELLS, SC = { x: scC.reduce((a, c) => a + c[0], 0) / scC.length, y: scC.reduce((a, c) => a + c[1], 0) / scC.length };
+const GP = GLOBE.map(([lon, lat]) => [Math.cos(lat * D2R), Math.sin(lat * D2R), Math.cos(lon * D2R), Math.sin(lon * D2R)]);
+
+// Partículas en suspensión: dan profundidad, suben despacio
+const DUST = Array.from({ length: 70 }, () => ({ x: rnd(), y: rnd(), z: .25 + rnd() * .75, ph: rnd() * TAU }));
+
+// Cámara de cada capítulo (coordenadas del mapa, giro en grados)
+const KEYS = {
+  globo: { x: 300, y: 712, z: 1, r: 0 }, falta: { x: 290, y: 700, z: 1.08, r: -3 }, red: { x: 300, y: 860, z: 1.25, r: -3 },
+  ejes: { x: 320, y: 690, z: 1.02, r: 4 }, foro: { x: RG[0] + 6, y: RG[1] - 6, z: 4.8, r: -9 }, punto: { x: 300, y: 700, z: 1, r: 2 },
+  crece: { x: 300, y: 705, z: .98, r: -3 }, cierre: { x: 300, y: 712, z: .92, r: 0 },
+};
+const NOTES = { globo: 392, falta: 440, red: 523, ejes: 587, foro: 659, punto: 784, crece: 880, cierre: 523 };
+
+// ---------- Estado ----------
+const S = { cur: 'globo', idx: 0, hero: 0, hs: 0, eje: 0, ejePrev: 0, ejeAt: 0, ejePrevAt: -9, redAt: -9, etapa: 1, view: 'mapa', vt: 0, user: null,
+  cam: { ...KEYS.globo }, spin: 0, dLon: 0, dLat: 0, vLon: 0, vLat: 0, drag: null, gl: null, mx: 0, my: 0, px: 0, py: 0, sway: 0, born: performance.now() / 1000,
+  w: { tw: 0, sc: 0, eje: 0, inst: 0, lbl: 0, rg: 0, demo: 0, links: 0, user: 0, amb: 0 } };
+
+// ---------- Sonido (solo con el botón) ----------
+// Música: tema original generado con IA (tema.mp3), en loop con fundido cruzado de 4 s.
+// Se usan dos <audio> alternados para que funcione también abriendo el archivo local.
+const A = { ctx: null, on: false };
+const MUS = { els: [], cur: 0, L: 140, X: 4, vol: .5, m: 0, mt: 0, xf: [1, 0], crossAt: 0, timer: null };
+window.__mus = MUS;
+function musInit() {
+  MUS.els = [0, 1].map(() => { const a = new Audio('tema.mp3'); a.preload = 'auto'; a.volume = 0; return a; });
+}
+function musTick() {
+  const now = performance.now() / 1000, k = 1 - Math.exp(-.1 / .6);
+  MUS.m += (MUS.mt - MUS.m) * k;
+  const a = MUS.els[MUS.cur], b = MUS.els[1 - MUS.cur];
+  if (MUS.mt > 0 && !MUS.crossAt && a.currentTime >= MUS.L - MUS.X) { MUS.crossAt = now; b.currentTime = 0; b.play().catch(() => {}); }
+  if (MUS.crossAt) {
+    const p = Math.min(1, (now - MUS.crossAt) / MUS.X); MUS.xf[MUS.cur] = Math.cos(p * Math.PI / 2); MUS.xf[1 - MUS.cur] = Math.sin(p * Math.PI / 2);
+    if (p >= 1) { a.pause(); MUS.cur = 1 - MUS.cur; MUS.crossAt = 0; }
+  }
+  MUS.els.forEach((el, i) => { try { el.volume = Math.max(0, Math.min(1, MUS.vol * MUS.m * MUS.xf[i])); } catch (_) {} });
+  if (MUS.mt === 0 && MUS.m < .01) { MUS.els.forEach(el => el.pause()); clearInterval(MUS.timer); MUS.timer = null; }
+}
+function musOn(on) {
+  if (!MUS.els.length) musInit();
+  MUS.mt = on ? 1 : 0;
+  if (on) { const a = MUS.els[MUS.cur]; MUS.xf[MUS.cur] = 1; a.play().catch(() => {}); if (!MUS.timer) MUS.timer = setInterval(musTick, 100); }
+}
+// Capa de tono isocrónico de 40 Hz (gamma), como en la referencia: una portadora suave cuyo volumen
+// late a ~40 Hz. Para evitar el acostumbramiento, la frecuencia del latido varía al azar entre 39,5 y 40,5 Hz.
+const GAM = { out: null, lfo: null, timer: null, level: .045 };
+function gammaInit() {
+  const ctx = A.ctx, out = ctx.createGain(); out.gain.value = 0; out.connect(ctx.destination);
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900; lp.connect(out);
+  const car = ctx.createOscillator(); car.type = 'sine'; car.frequency.value = 220;          // portadora
+  const am = ctx.createGain(); am.gain.value = .5; car.connect(am); am.connect(lp);
+  const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 40;          // latido gamma
+  const depth = ctx.createGain(); depth.gain.value = .5; lfo.connect(depth); depth.connect(am.gain);
+  car.start(); lfo.start(); Object.assign(GAM, { out, lfo });
+}
+function gammaDrift() { // nuevo objetivo entre 39,5 y 40,5 Hz cada 6 a 14 s, con transición lenta
+  if (!GAM.lfo) return; const f = 39.5 + Math.random();
+  GAM.lfo.frequency.setTargetAtTime(f, A.ctx.currentTime, 2.5);
+  GAM.timer = setTimeout(gammaDrift, 6000 + Math.random() * 8000);
+}
+window.__gam = GAM;
+function gammaOn(on) {
+  if (!A.ctx) return; if (!GAM.out) gammaInit();
+  GAM.out.gain.setTargetAtTime(on ? GAM.level : 0, A.ctx.currentTime, on ? 1.2 : .4);
+  clearTimeout(GAM.timer); if (on) gammaDrift();
+}
+// Efectos cortos y suaves: una nota senoidal con ataque lento y filtro, muy por debajo de la música
+function blip(freq = 880, dur = .5, vol = .07) {
+  if (!A.on || !A.ctx) return;
+  const ctx = A.ctx, t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+  o.type = 'sine'; o.frequency.value = freq / 2; f.type = 'lowpass'; f.frequency.value = 1400;
+  const v = vol * .28, d = Math.min(dur, .45);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .04); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  o.connect(f); f.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + d + .05);
+}
+const snd = document.getElementById('snd');
+snd.addEventListener('click', () => {
+  if (!A.ctx) { try { A.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {} }
+  A.on = !A.on; snd.setAttribute('aria-pressed', A.on); if (A.ctx) A.ctx.resume();
+  musOn(A.on); gammaOn(A.on);
+});
+
+// ---------- Lienzo ----------
+const cv = document.getElementById('map'), cx = cv.getContext('2d', { alpha: false });
+let W = 0, H = 0, dpr = 1, base = 1, AX0 = 0, AY0 = 0, AX = 0, AY = 0, mobile = false;
+function resize() {
+  W = innerWidth; H = innerHeight; dpr = Math.min(devicePixelRatio || 1, 1.5);
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  mobile = W <= 820;
+  if (mobile) { base = Math.min(W * .9 / 620, H * .56 / 1420); AX0 = W / 2; AY0 = H * .25; }
+  else { base = Math.min(W * .56 / 620, H * .9 / 1420); AX0 = W * .66; AY0 = H * .52; }
+  measure();
+}
+const zz = () => base * S.cam.z;
+let RC = 1, RS = 0; // coseno y seno del giro de cámara
+function toScreen(x, y) { const z = zz(), dx = (x - S.cam.x) * z, dy = (y - S.cam.y) * z; return [dx * RC - dy * RS + AX, dx * RS + dy * RC + AY]; }
+function mapTransform() {
+  const z = zz(), a = RC * z, b = RS * z, c = -RS * z, d = RC * z;
+  cx.setTransform(dpr * a, dpr * b, dpr * c, dpr * d, dpr * (AX - a * S.cam.x - c * S.cam.y), dpr * (AY - b * S.cam.x - d * S.cam.y));
+}
+function screenTransform() { cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+function dots(list, r, color, halo) {
+  if (halo) { cx.fillStyle = color; const g = cx.globalAlpha; cx.globalAlpha = g * .22; cx.beginPath(); list.forEach(([x, y]) => { cx.moveTo(x + r * 2.6, y); cx.arc(x, y, r * 2.6, 0, TAU); }); cx.fill(); cx.globalAlpha = g; }
+  cx.fillStyle = color; cx.beginPath(); list.forEach(([x, y]) => { cx.moveTo(x + r, y); cx.arc(x, y, r, 0, TAU); }); cx.fill();
+}
+// Nodo de la red: hexágono que gira alrededor de un punto (eco del símbolo)
+function hexNode(x, y, r, ang, color, lw = 1.4) {
+  cx.beginPath();
+  for (let i = 0; i < 6; i++) { const a = ang + i * TAU / 6 - Math.PI / 2; const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r; i ? cx.lineTo(px, py) : cx.moveTo(px, py); }
+  cx.closePath(); cx.strokeStyle = color; cx.lineWidth = lw; cx.stroke();
+}
+
+// Globo de puntos, proyección ortográfica
+function drawGlobe(h, time) {
+  const intro = reduce ? 1 : expo((time - S.born) / 2.2);
+  const turn = inout(h / .5), zoom = inout((h - .18) / .7), fade = (1 - smooth((h - .6) / .36)) * intro;
+  if (fade <= 0) return;
+  let lon0 = -20 + (S.spin + S.dLon) * (1 - turn) - (1 - intro) * 40; lon0 = ((lon0 + 64 + 540) % 360) - 180 - 64;
+  lon0 = lerp(lon0, -64, turn); const lat0 = lerp(12 + S.dLat + Math.sin(time * .3) * 3 * (1 - turn), -38, turn);
+  const [ex, ey] = toScreen(HEX.c[0], HEX.c[1]), Rend = HEX.k * zz(), R0 = Math.min(W, H) * (mobile ? .4 : .34) * lerp(.82, 1, intro);
+  const R = Math.exp(lerp(Math.log(R0), Math.log(Rend), zoom)), ox = lerp(AX, ex, zoom), oy = lerp(AY, ey, zoom);
+  S.gl = h < .3 ? { x: ox, y: oy, R } : null;
+  const cl0 = Math.cos(lon0 * D2R), sl0 = Math.sin(lon0 * D2R), cp0 = Math.cos(lat0 * D2R), sp0 = Math.sin(lat0 * D2R);
+  screenTransform();
+  if (zoom < .6) { cx.globalAlpha = fade * (1 - smooth(zoom / .6)); const g = cx.createRadialGradient(ox, oy, R * .92, ox, oy, R * 1.25); g.addColorStop(0, 'rgba(116,172,223,.18)'); g.addColorStop(1, 'rgba(116,172,223,0)'); cx.fillStyle = g; cx.beginPath(); cx.arc(ox, oy, R * 1.25, 0, TAU); cx.fill(); }
+  cx.globalAlpha = fade * (1 - smooth(zoom / .55)); cx.fillStyle = '#122A44'; cx.beginPath(); cx.arc(ox, oy, R, 0, TAU); cx.fill();
+  // Órbita: un anillo inclinado que gira, con nodos viajando
+  if (zoom < .5) {
+    const oa = fade * (1 - smooth(zoom / .5)) * .7, tilt = .28, rot = time * .25;
+    cx.globalAlpha = oa * .5; cx.strokeStyle = C.celeste; cx.lineWidth = 1; cx.beginPath(); cx.ellipse(ox, oy, R * 1.28, R * 1.28 * tilt, -.35, 0, TAU); cx.stroke();
+    for (let i = 0; i < 4; i++) { const a = rot + i * TAU / 4, ex2 = Math.cos(a) * R * 1.28, ey2 = Math.sin(a) * R * 1.28 * tilt, cr = Math.cos(-.35), sr = Math.sin(-.35);
+      const nx = ox + ex2 * cr - ey2 * sr, ny = oy + ex2 * sr + ey2 * cr; const front = Math.sin(a) > 0; cx.globalAlpha = oa * (front ? 1 : .35);
+      dots([[nx, ny]], 2.6, i === 0 ? C.dorado : C.celeste, front); }
+  }
+  const ds = clamp(R / 230, 1.2, 2.6), front = new Path2D(), rim = new Path2D(), spark = new Path2D();
+  for (let i = 0; i < GP.length; i++) {
+    const [cla, sla, clo, slo] = GP[i], cd = clo * cl0 + slo * sl0, sd = slo * cl0 - clo * sl0;
+    const d = sp0 * sla + cp0 * cla * cd; if (d <= 0) continue;
+    const x = ox + R * cla * sd, y = oy - R * (cp0 * sla - sp0 * cla * cd);
+    if (x < -6 || y < -6 || x > W + 6 || y > H + 6) continue;
+    (i % 37 === Math.floor(time * 3) % 37 && d > .3 ? spark : d > .3 ? front : rim).rect(x - ds / 2, y - ds / 2, ds, ds);
+  }
+  cx.globalAlpha = fade * (1 - smooth((h - .5) / .3) * .9);
+  cx.fillStyle = '#3A6E9E'; cx.fill(rim); cx.fillStyle = C.profundo; cx.fill(front); cx.fillStyle = C.celeste; cx.fill(spark);
+  const la = -51.62 * D2R, lo = -69.22 * D2R, cd = Math.cos(lo) * cl0 + Math.sin(lo) * sl0, sd = Math.sin(lo) * cl0 - Math.cos(lo) * sl0;
+  const d = sp0 * Math.sin(la) + cp0 * Math.cos(la) * cd;
+  if (d > 0) {
+    const x = ox + R * Math.cos(la) * sd, y = oy - R * (cp0 * Math.sin(la) - sp0 * Math.cos(la) * cd), grow = expo(d * 2.5);
+    cx.globalAlpha = fade * clamp(d * 3) * (1 - zoom); cx.strokeStyle = C.dorado; cx.lineWidth = 1.5;
+    cx.beginPath(); cx.moveTo(x, y); cx.lineTo(x, y - 34 * grow); cx.stroke();
+    cx.font = '500 11px "IBM Plex Mono", monospace'; cx.fillStyle = C.dorado; cx.fillText('RÍO GALLEGOS', x + 8, y - 26 * grow);
+    cx.globalAlpha = fade * clamp(d * 3) * (1 - smooth((h - .42) / .16)); dots([[x, y]], 3.5, C.dorado, true); hexNode(x, y, 9, time * .8, C.dorado, 1.2);
+  }
+  cx.globalAlpha = 1;
+}
+
+// Celdas que brotan en onda desde Río Gallegos (para Santa Cruz y cada eje)
+function popCells(cells, since, color, alpha, out) {
+  if (alpha <= .01 || since < 0) return;
+  const p = new Path2D(), n = cells.length;
+  for (let j = 0; j < n; j++) {
+    const [x, y] = cells[j]; let s = reduce ? 1 : back((since - j / n * .7) / .55);
+    if (out) s = reduce ? 0 : 1 - expo((since - j / n * .3) / .4);
+    if (s > .02) addHex(p, x, y, HR * s);
+  }
+  cx.globalAlpha = alpha; cx.fillStyle = color; cx.fill(p);
+}
+
+// Mapa en hexágonos
+function drawMap(alpha, reveal, time) {
+  if (alpha <= 0) return;
+  const w = S.w, [rx, ry] = toScreen(RG[0], RG[1]);
+  cx.save();
+  mapTransform();
+  if (reveal < 1) { const a1 = smooth(reveal / .35) * (1 - smooth((reveal - .35) / .55)); if (a1 > .01) { cx.globalAlpha = alpha * a1; cx.fillStyle = '#2F6FA8'; cx.fill(P.small); } }
+  const aF = smooth((reveal - .25) / .75); cx.globalAlpha = alpha * aF;
+  if (aF > .01) C.tonos.forEach((c, i) => { cx.fillStyle = c; cx.fill(P.tono[i]); });
+  cx.globalAlpha = alpha;
+  // Respiración del territorio: luz suave que recorre las celdas, siempre viva
+  const twA = Math.max(w.tw * .85, w.amb * .16);
+  if (twA > .01) {
+    cx.fillStyle = C.celeste;
+    P.tw.forEach((p, i) => { const a = reduce ? (i % 2 ? .5 : 0) : Math.pow(Math.max(0, Math.sin(time * .9 + i * 1.05)), 4); if (a > .02) { cx.globalAlpha = alpha * twA * a; cx.fill(p); } });
+  }
+  const now = time;
+  popCells(SC_CELLS, now - S.redAt, C.sc, alpha * w.sc, false);
+  if (w.eje > .01) {
+    popCells(EJE_CELLS[S.ejePrev], now - S.ejePrevAt, C.celeste, alpha * w.eje * .9, true);
+    popCells(EJE_CELLS[S.eje], now - S.ejeAt, C.celeste, alpha * w.eje * .9, false);
+  }
+  cx.restore();
+  if (false) {
+    cx.save(); screenTransform(); const rr = reveal * 1400 * zz(), band = 46 * zz();
+    const ring = new Path2D(); ring.arc(rx, ry, rr, 0, TAU); ring.arc(rx, ry, Math.max(0, rr - band), 0, TAU, true);
+    cx.clip(ring); mapTransform(); cx.globalAlpha = alpha * .9 * (1 - reveal); cx.fillStyle = C.celeste; cx.fill(P.all); cx.restore();
+  }
+  screenTransform(); alpha *= smooth(reveal * 1.6);
+  if (alpha <= 0) return;
+  // Miembros de ejemplo: flotan; conexiones con pulso viajero
+  if (w.links > .01) {
+    cx.globalAlpha = alpha * w.links * .45; cx.strokeStyle = C.celeste; cx.lineWidth = 1; cx.beginPath();
+    const curves = LINKS.map(([a, b]) => { const [x1, y1] = toScreen(DEMO[a].x, DEMO[a].y), [x2, y2] = toScreen(DEMO[b].x, DEMO[b].y), mx = (x1 + x2) / 2, my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * .22; cx.moveTo(x1, y1); cx.quadraticCurveTo(mx, my, x2, y2); return [x1, y1, mx, my, x2, y2]; });
+    cx.stroke();
+    cx.globalAlpha = alpha * w.links;
+    dots(curves.map(([x1, y1, mx, my, x2, y2], k) => { const t = (time * .35 + k * .17) % 1, u = 1 - t; return [u * u * x1 + 2 * u * t * mx + t * t * x2, u * u * y1 + 2 * u * t * my + t * t * y2]; }), 1.8, C.dorado, true);
+  }
+  if (w.demo > .01) {
+    const pts = DEMO.map((d, k) => { const [x, y] = toScreen(d.x, d.y); const g = reduce ? 1 : back((w.demo * 1.6) - (k / DEMO.length) * .6); return [x + Math.sin(time * .7 + d.ph) * 2.5, y + Math.cos(time * .6 + d.ph) * 2.5, g]; });
+    cx.globalAlpha = alpha * w.demo; pts.forEach(([x, y, g]) => { if (g > .05) dots([[x, y]], 2.6 * g, C.celeste, true); });
+  }
+  // Integrantes: nodos que giran en su ciudad, unidos a Río Gallegos (sede) con pulsos que viajan
+  const r = clamp(1.1 * S.cam.z + 1.6, 3, 6.5);
+  if (w.inst > .01) {
+    const pts = INST.map((n, i) => { const [x, y] = toScreen(n.x, n.y); return [x + Math.sin(time * .8 + i * 2) * 1.2, y + Math.cos(time * .7 + i * 2) * 1.2]; });
+    const s = expo(w.inst);
+    cx.globalAlpha = alpha * w.inst * .3; cx.strokeStyle = C.celeste; cx.lineWidth = 1; cx.beginPath();
+    pts.forEach(([x, y]) => { const mx = (rx + x) / 2 + (y - ry) * .12, my = (ry + y) / 2 - (x - rx) * .12; cx.moveTo(rx, ry); cx.quadraticCurveTo(mx, my, x, y); }); cx.stroke();
+    cx.globalAlpha = alpha * w.inst;
+    if (!reduce) dots(pts.map(([x, y], i) => { const t2 = (time * .32 + i / INST.length) % 1, u = 1 - t2, mx = (rx + x) / 2 + (y - ry) * .12, my = (ry + y) / 2 - (x - rx) * .12; return [u * u * rx + 2 * u * t2 * mx + t2 * t2 * x, u * u * ry + 2 * u * t2 * my + t2 * t2 * y]; }), 1.5, C.dorado, false);
+    dots(pts, r * s, C.celeste, true);
+    pts.forEach(([x, y], i) => hexNode(x, y, (r + 5) * s, time * (.5 + (i % 4) * .12) * (i % 2 ? -1 : 1), 'rgba(116,172,223,.65)', 1.1));
+    if (w.lbl > .01) { // rótulos por ciudad con la cantidad de integrantes
+      cx.font = '600 12.5px Archivo, sans-serif'; cx.lineWidth = 4; cx.strokeStyle = 'rgba(15,34,55,.9)';
+      PLACES.forEach((c, k) => { const n = INST.filter(m => m.c === c).length; if (!n) return; const [x, y] = toScreen(CITY[c][0], CITY[c][1]); const a = expo(w.lbl * 1.4 - k * .1) * (c === 'Río Gallegos' ? clamp((.3 - w.rg) / .3) : 1); if (a < .01) return; cx.globalAlpha = alpha * a;
+        const right = c !== 'El Calafate' && c !== 'Perito Moreno', lx = right ? x + 26 : x - 26; cx.textAlign = right ? 'left' : 'right';
+        const txt = c + (n > 1 ? ' · ' + n : ''); cx.strokeText(txt, lx, y + 4); cx.fillStyle = '#E6EDF4'; cx.fillText(txt, lx, y + 4); });
+      cx.textAlign = 'left';
+    }
+  }
+  // Río Gallegos: núcleo dorado con anillo hexagonal que gira (el punto de encuentro)
+  cx.globalAlpha = alpha;
+  if (!reduce) { const p = (time * .5) % 1; cx.strokeStyle = C.dorado; cx.lineWidth = 1.2; cx.globalAlpha = alpha * .5 * (1 - p); cx.beginPath(); cx.arc(rx, ry, 6 + p * 26, 0, TAU); cx.stroke(); cx.globalAlpha = alpha; }
+  dots([[rx, ry]], 3 + w.rg * 2.5, C.dorado, false);
+  hexNode(rx, ry, 9 + w.rg * 5, time * .5, 'rgba(246,180,14,.8)', 1.3);
+  if (w.rg > .01 && !mobile) { const a = expo(w.rg * 1.3), off = (1 - a) * 14; cx.globalAlpha = alpha * a; cx.font = '700 15px Archivo, sans-serif'; cx.fillStyle = '#fff'; cx.fillText('Río Gallegos', rx + 22 + off, ry - 4); cx.font = '500 11px "IBM Plex Mono", monospace'; cx.fillStyle = C.dorado; cx.fillText('COMPLEJO CULTURAL', rx + 22 + off * 1.4, ry + 13); }
+  if (S.user && w.user > .01) { const [ux, uy] = toScreen(S.user.x, S.user.y), s = back(w.user); cx.globalAlpha = alpha * w.user; dots([[ux, uy]], 3.5 * s, C.dorado, true); hexNode(ux, uy, 12 * s, -time * .9, C.dorado, 1.4); }
+  cx.globalAlpha = 1;
+}
+
+// Partículas: profundidad y sensación de inmersión
+function drawDust(time, dt, sy, vel) {
+  if (reduce) return;
+  screenTransform(); cx.fillStyle = C.celeste;
+  const near = new Path2D(), far = new Path2D();
+  DUST.forEach(p => {
+    p.y -= dt * (.006 + vel * .00002) * p.z; p.x += Math.sin(time * .2 + p.ph) * dt * .002;
+    const y = ((p.y - sy * .00012 * p.z) % 1 + 1) % 1, x = ((p.x % 1) + 1) % 1, s = .6 + p.z * 1.4;
+    (p.z > .6 ? near : far).rect(x * W, y * H, s, s);
+  });
+  cx.globalAlpha = .1; cx.fill(far); cx.globalAlpha = .22; cx.fill(near); cx.globalAlpha = 1;
+}
+
+// Vista Red: mapa de relaciones que gira
+let NET = [];
+// Vista Red: ConexIA al centro, los ejes alrededor y cada integrante colgado de su eje principal.
+// Las líneas punteadas lo unen con sus otros ejes.
+const CATS = ['Institucional', 'Energía', 'Hidrocarburos', 'Minería', 'Comercio exterior', 'Blockchain', 'Inteligencia artificial', 'Educación', 'Industria de la cultura', 'Turismo', 'Gastronomía', 'RSE'];
+// Red en 3D: los ejes en una esfera alrededor de ConexIA, cada integrante orbitando su eje principal.
+// Se gira arrastrando con el mouse; suelta, sigue girando despacio.
+const R3 = { yaw: .4, pitch: -.25, vy: 0, vp: 0, drag: null, moved: false, last: 0, focus: null, ft: 0, FN: [], fc: null };
+const NET3 = (() => {
+  const nc = CATS.length, cats = CATS.map((c, i) => { // esfera de Fibonacci
+    const y = 1 - (i + .5) / nc * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996;
+    return { c, d: [Math.cos(a) * r, y * .82, Math.sin(a) * r] };
+  });
+  const byCat = {}; INST.forEach((mb, i) => (byCat[mb.e[0]] = byCat[mb.e[0]] || []).push(i));
+  const mem = [];
+  cats.forEach(({ c, d }) => {
+    const L = byCat[c] || []; if (!L.length) return;
+    const up = Math.abs(d[1]) > .9 ? [1, 0, 0] : [0, 1, 0];
+    const cr = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]], nz = v => { const l = Math.hypot(...v); return v.map(x => x / l); };
+    const u = nz(cr(d, up)), v = cr(d, u);
+    L.forEach((i, j) => { const k = L.length, f = j * TAU / k + .6, sp = k === 1 ? 0 : .3;
+      mem.push({ i, c, p: [0, 1, 2].map(q => d[q] * 1.62 + (u[q] * Math.cos(f) + v[q] * Math.sin(f)) * sp) }); });
+  });
+  return { cats, mem };
+})();
+function drawNet(alpha0, time) {
+  if (alpha0 <= 0.01) { NET = []; R3.FN = []; return; }
+  const alpha = alpha0 * (1 - .88 * R3.ft);
+  const dt = Math.min(.05, Math.max(0, time - (R3.last || time))); R3.last = time;
+  // giro constante muy sutil (una vuelta cada ~2,5 min) y un leve vaivén vertical; sigue aunque se haya arrastrado
+  if (!R3.drag) { R3.yaw += (R3.vy + .042) * dt; R3.pitch += R3.vp * dt; const k = Math.exp(-dt * 2.2); R3.vy *= k; R3.vp *= k; }
+  R3.pitch = clamp(R3.pitch, -1.1, 1.1);
+  screenTransform();
+  const grow = back(alpha);
+  const ox = mobile ? W / 2 : W * .66, oy = mobile ? H * .24 : H * .52;
+  const m = Math.min(mobile ? W * .78 : W * .5, mobile ? H * .36 : H * .78), Rk = m * .36 * grow, P = m * 2.2;
+  const pv = R3.pitch + Math.sin(time * .16) * .07;
+  const cy = Math.cos(R3.yaw), sy = Math.sin(R3.yaw), cp = Math.cos(pv), sp = Math.sin(pv);
+  const proj = p => { const x1 = p[0] * cy + p[2] * sy, z1 = -p[0] * sy + p[2] * cy, y2 = p[1] * cp - z1 * sp, z2 = p[1] * sp + z1 * cp;
+    const X = x1 * Rk, Y = y2 * Rk, Z = z2 * Rk, f = P / (P - Z); return { x: ox + X * f, y: oy + Y * f, z: z2 / 1.9, f }; };
+  const ejeSel = S.cur === 'ejes' ? EJES[S.eje][0] : null;
+  const core = { ...proj([0, 0, 0]), r: 12, c: C.dorado, label: 'ConexIA', core: 1 };
+  const cat = {}; const N = [core];
+  NET3.cats.forEach(({ c, d }) => { const q = proj(d); cat[c] = { ...q, r: 6 * q.f, c: c === ejeSel ? C.dorado : !EJES.some(x => x[0] === c) ? '#6B7C8E' : C.profundo, label: c, cat: c }; N.push(cat[c]); });
+  NET3.mem.forEach(({ i, p }) => { const q = proj(p); N.push({ ...q, r: 4.4 * q.f, c: C.celeste, label: INST[i].lb || INST[i].s, inst: i, hl: ejeSel && INST[i].e.includes(ejeSel) }); });
+  const dep = z => .28 + .72 * clamp((z + 1) / 2);
+  // líneas, cada una con la opacidad de su profundidad
+  const line = (a, b, dash, base) => { cx.globalAlpha = alpha * base * dep((a.z + b.z) / 2); cx.setLineDash(dash); cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); };
+  cx.lineWidth = 1; cx.strokeStyle = 'rgb(116,172,223)';
+  NET3.cats.forEach(({ c }) => line(core, cat[c], [], .45));
+  N.forEach(n => { if (n.inst === undefined) return; const E = INST[n.inst].e; line(cat[E[0]], n, [], .42); E.slice(1).forEach(c => line(n, cat[c], [3, 4], .25)); });
+  cx.setLineDash([]);
+  if (!reduce) NET3.cats.forEach(({ c }, k) => { const p = (time * .35 + k * .17) % 1, b = cat[c]; cx.globalAlpha = alpha * dep(b.z * p); dots([[lerp(core.x, b.x, p), lerp(core.y, b.y, p)]], 1.7, C.dorado, false); });
+  // nodos de atrás hacia adelante
+  N.slice().sort((a, b) => a.z - b.z).forEach((n, k) => {
+    const dim = ejeSel && n.inst !== undefined && !n.hl ? .35 : 1, a = alpha * dep(n.z) * dim;
+    cx.globalAlpha = a;
+    dots([[n.x, n.y]], n.r, n.hl ? C.dorado : n.c, true);
+    hexNode(n.x, n.y, n.r + (n.core ? 7 : 5 * n.f), time * (k % 2 ? -.5 : .5), n.core ? 'rgba(246,180,14,.8)' : 'rgba(116,172,223,.5)', 1.1);
+    cx.textAlign = 'center';
+    if (n.core) { cx.globalAlpha = alpha; cx.font = '700 14px Archivo, sans-serif'; cx.fillStyle = '#fff'; cx.fillText(n.label, n.x, n.y + 30); }
+    else if (n.cat) { cx.font = `700 ${Math.round((mobile ? 10 : 12) * Math.min(1.15, n.f))}px Archivo, sans-serif`; cx.fillStyle = n.label === ejeSel ? C.dorado : '#DCE6F0'; cx.fillText(n.label, n.x, n.y - n.r - 9); }
+    else if (!mobile && (n.z > -.25 || n.hl)) { cx.globalAlpha = a * clamp((n.z + .25) * 3 + (n.hl ? 1 : 0)); cx.font = '500 11px Archivo, sans-serif'; cx.fillStyle = n.hl ? '#fff' : '#A9BCCF'; cx.fillText(n.label, n.x, n.y + n.r + 15); }
+  });
+  cx.textAlign = 'start'; cx.globalAlpha = 1; NET = N;
+  drawFocus(alpha0, time, cat, dt);
+}
+// "Entrar" en un nodo: fondo oscuro y la categoría a pantalla completa con sus integrantes alrededor.
+function drawFocus(alpha, time, cat, dt) {
+  R3.ft += ((R3.focus ? 1 : 0) - R3.ft) * (reduce ? 1 : 1 - Math.exp(-dt / .28));
+  if (R3.ft < .01) { R3.FN = []; if (!R3.focus) R3.fc = null; return; }
+  const c = R3.focus || R3.fc; if (!c) return; R3.fc = c;
+  const f = R3.ft, e = smooth(f), src = cat[c] || { x: W / 2, y: H / 2 };
+  screenTransform();
+  cx.globalAlpha = alpha * .7 * e; cx.fillStyle = '#081523'; cx.fillRect(0, 0, W, H);
+  const g = cx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * .6); g.addColorStop(0, 'rgba(31,78,126,.35)'); g.addColorStop(1, 'rgba(8,21,35,0)');
+  cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+  const ox = lerp(src.x, W / 2, e), oy = lerp(src.y, mobile ? H * .5 : H / 2 + 30, e);
+  const L = INST.map((m, i) => ({ m, i })).filter(o => o.m.e.includes(c)).sort((a, b) => (b.m.e[0] === c) - (a.m.e[0] === c));
+  const R = Math.min(W * (mobile ? .34 : .3), H * .28) * e, n = L.length, rot = time * .03;
+  const FN = L.map((o, k) => { const a = -Math.PI / 2 + (n === 1 ? 0 : k * TAU / n) + rot * (reduce ? 0 : 1); return { x: ox + Math.cos(a) * R, y: oy + Math.sin(a) * R, a, inst: o.i, main: o.m.e[0] === c }; });
+  cx.lineWidth = 1.2; cx.strokeStyle = 'rgb(116,172,223)';
+  FN.forEach(p => { cx.globalAlpha = alpha * e * (p.main ? .55 : .35); cx.setLineDash(p.main ? [] : [4, 5]); cx.beginPath(); cx.moveTo(ox, oy); cx.lineTo(p.x, p.y); cx.stroke(); });
+  cx.setLineDash([]);
+  if (!reduce) { cx.globalAlpha = alpha * e; dots(FN.map((p, k) => { const q = (time * .4 + k * .23) % 1; return [lerp(ox, p.x, q), lerp(oy, p.y, q)]; }), 2.2, C.dorado, false); }
+  // centro: la categoría
+  cx.globalAlpha = alpha * e;
+  dots([[ox, oy]], 16 + 8 * e, C.profundo, true); hexNode(ox, oy, 34 + 10 * e, time * .4, 'rgba(246,180,14,.85)', 1.6); hexNode(ox, oy, 52 + 14 * e, -time * .25, 'rgba(116,172,223,.35)', 1);
+  cx.textAlign = 'center'; cx.fillStyle = '#fff'; cx.font = `800 ${mobile ? 22 : 30}px Archivo, sans-serif`; const ty0 = mobile ? lerp(oy, H * .19, e) : oy + 108 * e; cx.fillText(c, ox, ty0);
+  cx.font = '500 12px "IBM Plex Mono", monospace'; cx.fillStyle = C.celeste;
+  cx.fillText(`${n} ${n === 1 ? 'INTEGRANTE' : 'INTEGRANTES'}`, ox, ty0 + (mobile ? 20 : 24));
+  // integrantes
+  FN.forEach((p, k) => {
+    const m = INST[p.inst], hov = R3.hov === p.inst;
+    cx.globalAlpha = alpha * e;
+    dots([[p.x, p.y]], hov ? 11 : 9, p.main ? C.celeste : '#5B7A99', true);
+    hexNode(p.x, p.y, hov ? 22 : 18, time * (k % 2 ? -.5 : .5), p.main ? 'rgba(116,172,223,.7)' : 'rgba(116,172,223,.35)', 1.2);
+    const below = Math.sin(p.a) > -.35, ty = below ? p.y + 38 : p.y - 44;
+    const name = mobile ? (m.lb || m.s || m.n) : m.n.length > 34 && m.s ? m.s : m.n;
+    cx.fillStyle = '#fff'; cx.font = `700 ${mobile ? 12 : 15}px Archivo, sans-serif`; cx.fillText(name, p.x, ty);
+    cx.fillStyle = '#9FB3C7'; cx.font = `500 ${mobile ? 10 : 11}px "IBM Plex Mono", monospace`;
+    cx.fillText((m.c + (p.main ? '' : ' · también')).toUpperCase(), p.x, ty + (mobile ? 15 : 18));
+  });
+  if (!mobile) { cx.globalAlpha = alpha * e * .8; cx.fillStyle = '#9FB3C7'; cx.font = '500 12px "IBM Plex Mono", monospace'; cx.fillText('TOCÁ UN INTEGRANTE PARA VER SU FICHA · ESC O CLIC AFUERA PARA VOLVER', W / 2, H - 34); }
+  cx.textAlign = 'start'; cx.globalAlpha = 1; R3.FN = FN;
+}
+window.__net = () => ({ NET, R3 });
+function enterFocus(c) { R3.fidx = S.idx; R3.focus = c; R3.fc = c; R3.vy = R3.vp = 0; document.documentElement.classList.add('netfocus'); SM.locked = true; blip(659, .35, .06); }
+function exitFocus() { if (!R3.focus) return; R3.focus = null; document.documentElement.classList.remove('netfocus'); SM.locked = false; closeInst(); blip(440, .25, .05); }
+
+// ---------- Texto: palabras que suben desde una máscara, bloques que entran escalonados ----------
+const chs = [...document.querySelectorAll('.ch')], panels = chs.map(c => c.querySelector('.panel'));
+function splitWords(el) {
+  [...el.childNodes].forEach(n => {
+    if (n.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      n.textContent.split(/(\s+)/).forEach(part => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+        const w = document.createElement('span'); w.className = 'w'; const i = document.createElement('span'); i.className = 'wi'; i.textContent = part; w.appendChild(i); frag.appendChild(w);
+      });
+      n.replaceWith(frag);
+    } else if (n.nodeType === 1) splitWords(n);
+  });
+}
+const REV = panels.map(p => {
+  const h = p.querySelector('h1, h2'); splitWords(h);
+  return { words: [...h.querySelectorAll('.wi')], blocks: [...p.children].filter(c => c !== h), last: new Map() };
+});
+function setT(rev, el, ty, op, unit = 'px') {
+  const key = ty.toFixed(1) + '|' + op.toFixed(2);
+  if (rev.last.get(el) === key) return; rev.last.set(el, key);
+  el.style.transform = ty === 0 ? 'none' : `translate3d(0,${ty.toFixed(1)}${unit},0)`; el.style.opacity = op;
+}
+
+// ---------- Capítulos ----------
+let TOPS = [], HS = [], DOCH = 1;
+function measure() {
+  // en pantallas bajas, sube el panel lo necesario para que entre completo
+  const vh = innerHeight, mob = matchMedia('(max-width: 760px)').matches;
+  document.querySelectorAll('main .ch:not(.hero) .panel').forEach(p => {
+    if (mob) { p.style.top = ''; return; }
+    const pref = vh * (p.classList.contains('compact') ? .11 : .22);
+    p.style.top = Math.max(76, Math.min(pref, vh - p.offsetHeight - 70)) + 'px';
+  });
+  TOPS = chs.map(c => c.offsetTop); HS = chs.map(c => c.offsetHeight); DOCH = document.documentElement.scrollHeight;
+}
+const rail = document.getElementById('rail'), view = document.getElementById('view'), prog = document.getElementById('prog'), coord = document.getElementById('coord'), zoomEl = document.getElementById('zoom');
+let lenis = null;
+// Scroll propio: cada muesca de la rueda avanza como máximo 110 px, sin importar la configuración
+// del mouse o del sistema, y el recorrido se desliza con inercia. Táctil y teclado quedan nativos.
+const SM = { target: 0, cur: 0, active: false, tau: .22, locked: false, win: 0, acc: 0 };
+const maxScroll = () => Math.max(0, document.documentElement.scrollHeight - innerHeight);
+addEventListener('wheel', e => {
+  if (reduce || e.ctrlKey) return;
+  e.preventDefault(); if (R3.focus && !ficha.classList.contains('open')) { exitFocus(); return; } if (SM.locked) return;
+  let d = e.deltaY * (e.deltaMode === 1 ? 36 : e.deltaMode === 2 ? innerHeight : 1);
+  // Límite por ventana de tiempo: ráfagas de eventos (mouse de alta resolución, trackpad, scroll suave del sistema)
+  // no pueden sumar más de 120 px cada 120 ms
+  const nowW = performance.now(); if (nowW - SM.win > 120) { SM.win = nowW; SM.acc = 0; }
+  const allow = Math.max(0, 120 - SM.acc); d = Math.sign(d) * Math.min(Math.abs(d), allow); SM.acc += Math.abs(d);
+  if (!SM.active) SM.cur = SM.target = scrollY;
+  SM.target = clamp(SM.target + d, 0, maxScroll()); SM.tau = .22; SM.active = true;
+}, { passive: false });
+addEventListener('scroll', () => { if (!SM.active) SM.cur = SM.target = scrollY; }, { passive: true });
+function jump(i) {
+  const y = i === 0 ? 0 : TOPS[i] + (chs[i].classList.contains('flow') ? innerHeight * .2 : innerHeight * .25);
+  if (reduce) { scrollTo(0, y); return; }
+  if (!SM.active) SM.cur = scrollY; SM.target = clamp(y, 0, maxScroll()); SM.tau = .6; SM.active = true;
+}
+chs.forEach((c, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = `<span>${c.dataset.name}</span><i></i>`; b.addEventListener('click', () => jump(i)); rail.appendChild(b); });
+document.querySelector('[data-jump]').addEventListener('click', e => { e.preventDefault(); jump(5); });
+document.getElementById('livePill').addEventListener('click', e => { e.preventDefault(); if (document.getElementById('heroLive').hidden) jump(4); else jump(0); });
+document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); jump(0); });
+
+function setCur(i, time) {
+  if (S.idx === i) return;
+  S.idx = i; S.cur = chs[i].dataset.key;
+  if (S.cur === 'red' || S.cur === 'foro') { if (S.w.sc < .2) S.redAt = time; }
+  if (S.cur === 'ejes') S.ejeAt = time;
+  [...rail.children].forEach((b, j) => b.setAttribute('aria-current', j === i));
+  view.classList.toggle('off', i === 0);
+  blip(NOTES[S.cur]);
+}
+rail.children[0].setAttribute('aria-current', 'true');
+
+function camAt(sy) {
+  // La cámara se mueve todo el tiempo: cada capítulo tiene su encuadre en el centro de su tramo
+  // y entre un centro y el siguiente el acercamiento es continuo, sin zonas quietas ni saltos.
+  const vh = innerHeight, A = chs.map((c, i) => i === 0 ? HS[0] - vh : TOPS[i] + (HS[i] - vh * 1.85) / 2);
+  if (sy <= A[0]) return KEYS.globo;
+  let i = 1; while (i < chs.length - 1 && sy > A[i]) i++;
+  const a = KEYS[chs[i - 1].dataset.key], b = KEYS[chs[i].dataset.key];
+  let t = clamp((sy - A[i - 1]) / Math.max(1, A[i] - A[i - 1]));
+  t = reduce ? (t > .5 ? 1 : 0) : smooth(t);
+  let z = Math.exp(lerp(Math.log(a.z), Math.log(b.z), t)); if (mobile && z > 1) z = 1 + (z - 1) * .55;
+  return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), z, r: lerp(a.r, b.r, t) };
+}
+
+const introWords = REV[0].words;
+let DT = 1 / 60;
+function updateDOM(sy, time) {
+  const vh = innerHeight, vc = sy + vh * .5;
+  let cur = 0; for (let i = 0; i < chs.length; i++) if (vc >= TOPS[i]) cur = i;
+  setCur(cur, time);
+  S.hero = clamp(sy / Math.max(1, HS[0] - vh));
+  panels.forEach((p, i) => {
+    const R = REV[i], flow = chs[i].classList.contains('flow');
+    let e, x;
+    if (i === 0) { e = reduce ? 1 : clamp((time - S.born - .3) / 1.6); x = smooth((S.hero - .25) / .3); }
+    else {
+      // El texto anterior termina de irse antes de que entre el siguiente: nunca se pisan
+      const top = TOPS[i], bot = top + HS[i];
+      e = clamp((sy + vh * .88 - top) / (vh * .3));
+      x = flow || i === chs.length - 1 ? 0 : 1 - clamp((bot - sy - vh * (mobile ? 1.06 : 1.02)) / (vh * .25));
+    }
+    // Suavizado propio del texto: sigue al scroll con inercia, sin saltos
+    const kt = reduce ? 1 : 1 - Math.exp(-DT / .32);
+    if (R.es === undefined) { R.es = e; R.xs = x; }
+    R.es += (e - R.es) * kt; if (Math.abs(R.es - e) < .001) R.es = e;
+    e = Math.min(R.es, e > R.es ? R.es : e);
+    if (e <= 0.001) { if (R.state !== 'hid') { R.state = 'hid'; p.style.visibility = 'hidden'; } return; }
+    if (x >= .999) { if (R.state !== 'out') { R.state = 'out'; p.style.visibility = 'hidden'; } return; }
+    if (R.state !== 'on') { R.state = 'on'; p.style.visibility = ''; }
+    // salida: el panel sube y se desvanece
+    // Deriva suave mientras el texto está fijo: siempre hay movimiento al scrollear
+    const q = i === 0 ? 0 : clamp((sy - TOPS[i] + vh * .58) / Math.max(1, HS[i] - vh * .69));
+    const drift = reduce || i === 0 ? 0 : (.5 - q) * 34;
+    const xo = smooth(x); setT(R, p, drift - xo * 36, 1 - xo);
+    const n = R.words.length;
+    R.words.forEach((w, j) => { const a = reduce ? 1 : smooth(e * 1.5 - j / Math.max(1, n) * .5); setT(R, w, (1 - a) * 90, clamp(a * 1.4), '%'); });
+    R.blocks.forEach((b, k) => { const a = reduce ? 1 : smooth(e * 1.5 - .3 - k * .12); setT(R, b, (1 - a) * 22, a); });
+  });
+  const pr = clamp(sy / Math.max(1, DOCH - vh));
+  prog.style.transform = `scaleX(${pr.toFixed(4)})`;
+}
+
+// ---------- Bucle único ----------
+let last = performance.now(), lastCoord = '', lastSy = 0, vel = 0;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now; const time = now / 1000;
+  if (SM.active) {
+    SM.cur += (SM.target - SM.cur) * (1 - Math.exp(-dt / SM.tau));
+    if (Math.abs(SM.target - SM.cur) < .4) { SM.cur = SM.target; SM.active = false; }
+    scrollTo(0, SM.cur);
+  }
+  const sy = SM.active ? SM.cur : scrollY;
+  vel = lerp(vel, Math.abs(sy - lastSy) / Math.max(dt, .001), .1); lastSy = sy;
+  DT = dt; updateDOM(sy, time);
+  // Globo arrastrable: giro propio, inercia al soltar y la latitud vuelve sola a su lugar
+  if (!S.drag) {
+    if (!reduce) S.spin += dt * 6 * (1 - clamp(Math.abs(S.vLon) / 40));
+    S.dLon += S.vLon * dt; S.dLat += S.vLat * dt; const f = Math.exp(-dt / .7); S.vLon *= f; S.vLat *= f;
+    S.dLat += (0 - S.dLat) * (1 - Math.exp(-dt / 2.5));
+  }
+  S.dLat = clamp(S.dLat, -55, 55);
+  // Cámara: sigue al scroll con inercia propia, más un vaivén lento y el mouse
+  const tgt = camAt(sy), kc = reduce ? 1 : 1 - Math.exp(-dt / .45);
+  S.cam.x += (tgt.x - S.cam.x) * kc; S.cam.y += (tgt.y - S.cam.y) * kc; S.cam.r += (tgt.r - S.cam.r) * kc;
+  S.cam.z = Math.exp(lerp(Math.log(S.cam.z), Math.log(tgt.z), kc));
+  const kp = 1 - Math.exp(-dt / .6); S.px += (S.mx - S.px) * kp; S.py += (S.my - S.py) * kp;
+  const landed = smooth((S.hs - .85) / .15), sway = reduce ? 0 : Math.sin(time * .17) * 1.6 * landed;
+  const ang = (S.cam.r + sway + S.px * 2.5 * landed) * D2R; RC = Math.cos(ang); RS = Math.sin(ang);
+  AX = AX0 + (reduce ? 0 : S.px * 18); AY = AY0 + (reduce ? 0 : S.py * 12 + Math.sin(time * .23) * 4 * landed);
+  // Pesos de capas: transiciones suaves, nunca cortes
+  const k = reduce ? 1 : 1 - Math.exp(-dt / .45), c = S.cur, T = {
+    tw: c === 'falta', sc: c === 'red' || c === 'foro', eje: c === 'ejes', inst: !['globo', 'falta', 'ejes'].includes(c), lbl: !['globo', 'falta'].includes(c) && !mobile,
+    rg: c === 'foro', demo: c === 'crece' && S.etapa >= 2, links: c === 'crece' && S.etapa >= 3, user: !!S.user, amb: S.hero > .95 };
+  for (const n in T) S.w[n] += ((T[n] ? 1 : 0) - S.w[n]) * (n === 'lbl' && !T[n] ? Math.min(1, k * 3) : k);
+  S.vt += ((S.view === 'red' && S.idx > 0 ? 1 : 0) - S.vt) * (reduce ? 1 : 1 - Math.exp(-dt / .4));
+  if (R3.focus && (S.view !== 'red' || S.idx !== R3.fidx)) exitFocus();
+
+  screenTransform(); cx.globalAlpha = 1; cx.fillStyle = C.acero; cx.fillRect(0, 0, W, H);
+  S.hs += (S.hero - S.hs) * (reduce ? 1 : 1 - Math.exp(-dt / .6));
+  const h = S.hs, reveal = reduce ? (h > .7 ? 1 : 0) : smooth((h - .45) / .5);
+  drawDust(time, dt, sy, vel);
+  if (h < 1) drawGlobe(h, time);
+  drawMap(1 - S.vt, reveal, time);
+  drawNet(S.vt, time);
+
+  const lon = h < .9 ? lerp(((-20 + S.spin + S.dLon + 64 + 540) % 360) - 180 - 64, -64, inout(h / .55)) : FIT[0][0] * S.cam.x + FIT[0][1] * S.cam.y + FIT[0][2];
+  const lat = h < .9 ? lerp(12 + S.dLat, -38, inout(h / .55)) : FIT[1][0] * S.cam.x + FIT[1][1] * S.cam.y + FIT[1][2];
+  const s = `${fmt(lat, 'N', 'S')} · ${fmt(lon, 'E', 'O')}`;
+  if (s !== lastCoord) { lastCoord = s; coord.textContent = s; zoomEl.textContent = h < .9 ? 'Planeta' : '×' + S.cam.z.toFixed(1); }
+  requestAnimationFrame(frame);
+}
+
+// ---------- Interacción ----------
+addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { S.mx = e.clientX / W * 2 - 1; S.my = e.clientY / H * 2 - 1; } }, { passive: true });
+view.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+  S.view = b.dataset.view; view.querySelectorAll('button').forEach(c => c.setAttribute('aria-pressed', c === b)); blip(S.view === 'red' ? 740 : 494, .3);
+}));
+const ficha = document.getElementById('ficha'), fichaX = document.getElementById('fichaX'); let opener = null;
+function openInst(i, from) {
+  const n = INST[i]; document.getElementById('fichaR').textContent = n.r + ' · ' + (n.c === 'CABA' ? 'Ciudad de Buenos Aires' : n.c); document.getElementById('fichaT').textContent = n.n; document.getElementById('fichaD').textContent = n.d;
+  const lk = document.getElementById('fichaU'); if (n.u) { lk.href = n.u; lk.hidden = false; } else lk.hidden = true;
+  opener = from || document.activeElement; ficha.classList.add('open'); ficha.setAttribute('aria-hidden', 'false'); setTimeout(() => fichaX.focus({ preventScroll: true }), 60); blip(988, .35);
+}
+function closeInst() { if (!ficha.classList.contains('open')) return; ficha.classList.remove('open'); ficha.setAttribute('aria-hidden', 'true'); if (opener && opener.focus) opener.focus({ preventScroll: true }); }
+const mb = document.getElementById('miembros');
+GROUPS.forEach(([g, cs]) => { const L = INST.map((m, i) => [m, i]).filter(([m]) => cs.includes(m.c)); if (!L.length) return;
+  const h = document.createElement('p'); h.className = 'mono mg'; h.textContent = g + ' · ' + L.length; mb.appendChild(h);
+  const box = document.createElement('div'); box.className = 'mchips';
+  L.forEach(([m, i]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'mchip'; b.textContent = m.s; b.title = m.n + ' · ' + m.c; b.addEventListener('click', () => openInst(i, b)); box.appendChild(b); });
+  mb.appendChild(box); });
+fichaX.addEventListener('click', closeInst);
+addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (ficha.classList.contains('open')) closeInst(); else exitFocus(); });
+function hit(x, y) {
+  if (S.vt > .5) { let b = null; NET.forEach(n => { if (n.inst !== undefined && Math.hypot(n.x - x, n.y - y) < 16 && (!b || n.z > b.z)) b = n; }); return b ? b.inst : -1; }
+  if (S.w.inst < .5) return -1;
+  let best = -1, bd = 14; INST.forEach((n, i) => { const [sx, sy] = toScreen(n.x, n.y), d = Math.hypot(sx - x, sy - y); if (d < bd) { bd = d; best = i; } }); return best;
+}
+const focusHit = (x, y) => { const p = R3.FN.find(p => Math.hypot(p.x - x, p.y - y) < 26); return p ? p.inst : -1; };
+const catHit = (x, y) => { if (S.vt < .5 || R3.focus) return null; let b = null; NET.forEach(n => { if (n.cat && Math.hypot(n.x - x, n.y - y) < 18 && (!b || n.z > b.z)) b = n; }); return b ? b.cat : null; };
+cv.addEventListener('click', e => {
+  if (R3.moved) { R3.moved = false; return; }
+  if (R3.focus) { const i = focusHit(e.clientX, e.clientY); if (i >= 0) openInst(i, null); else if (ficha.classList.contains('open')) closeInst(); else exitFocus(); return; }
+  const c = catHit(e.clientX, e.clientY); if (c) { enterFocus(c); return; }
+  const i = hit(e.clientX, e.clientY); if (i >= 0) openInst(i, null);
+});
+document.getElementById('nback').addEventListener('click', exitFocus);
+const onGlobe = (x, y) => S.gl && S.hero < .3 && Math.hypot(x - S.gl.x, y - S.gl.y) < S.gl.R * 1.05;
+const onNet = () => S.vt > .5 && !R3.focus;
+cv.addEventListener('mousemove', e => {
+  if (S.drag || R3.drag) return;
+  if (R3.focus) { R3.hov = focusHit(e.clientX, e.clientY); cv.style.cursor = R3.hov >= 0 ? 'pointer' : ''; return; }
+  cv.style.cursor = catHit(e.clientX, e.clientY) || hit(e.clientX, e.clientY) >= 0 ? 'pointer' : onGlobe(e.clientX, e.clientY) || onNet() ? 'grab' : '';
+});
+cv.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch' || !onNet()) return;
+  cv.setPointerCapture(e.pointerId); R3.drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t: performance.now() }; R3.vy = R3.vp = 0; R3.moved = false; cv.style.cursor = 'grabbing'; SM.locked = true;
+});
+cv.addEventListener('pointermove', e => {
+  const d = R3.drag; if (!d) return;
+  const now = performance.now(), dt = Math.max(1, now - d.t) / 1000, k = 1 / 160, dx = (e.clientX - d.x) * k, dy = (e.clientY - d.y) * k;
+  R3.yaw += dx; R3.pitch -= dy; R3.vy = lerp(R3.vy, dx / dt, .5); R3.vp = lerp(R3.vp, -dy / dt, .5);
+  if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) > 5) R3.moved = true;
+  d.x = e.clientX; d.y = e.clientY; d.t = now;
+});
+const endNet = () => { if (!R3.drag) return; if (performance.now() - R3.drag.t > 80) R3.vy = R3.vp = 0; R3.vy = clamp(R3.vy, -3, 3); R3.vp = clamp(R3.vp, -3, 3); R3.drag = null; cv.style.cursor = 'grab'; SM.locked = false; };
+cv.addEventListener('pointerup', endNet); cv.addEventListener('pointercancel', endNet);
+cv.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch' || !onGlobe(e.clientX, e.clientY)) return;
+  e.preventDefault(); cv.setPointerCapture(e.pointerId);
+  S.drag = { x: e.clientX, y: e.clientY, t: performance.now() }; S.vLon = S.vLat = 0; cv.style.cursor = 'grabbing';
+  SM.locked = true; blip(392, .25, .05);
+});
+cv.addEventListener('pointermove', e => {
+  const d = S.drag; if (!d) return;
+  const now = performance.now(), dt = Math.max(1, now - d.t) / 1000, k = 57.3 / Math.max(80, S.gl ? S.gl.R : 300);
+  const dLon = -(e.clientX - d.x) * k, dLat = (e.clientY - d.y) * k;
+  S.dLon += dLon; S.dLat += dLat; S.vLon = lerp(S.vLon, dLon / dt, .5); S.vLat = lerp(S.vLat, dLat / dt, .5);
+  d.x = e.clientX; d.y = e.clientY; d.t = now;
+});
+const endDrag = e => { if (!S.drag) return; if (performance.now() - S.drag.t > 80) { S.vLon = 0; S.vLat = 0; } S.drag = null; cv.style.cursor = 'grab'; SM.locked = false; };
+cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+if (matchMedia('(hover: none)').matches) document.getElementById('dragHint').hidden = true;
+
+const chips = document.getElementById('chips'), ejeTxt = document.getElementById('ejeTxt');
+EJES.forEach(([n], i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = n; b.setAttribute('aria-pressed', i === 0);
+  b.addEventListener('click', () => {
+    if (i === S.eje) return; const t = performance.now() / 1000;
+    S.ejePrev = S.eje; S.ejePrevAt = t; S.eje = i; S.ejeAt = t;
+    chips.querySelectorAll('.chip').forEach((c, j) => c.setAttribute('aria-pressed', j === i));
+    ejeTxt.classList.remove('in'); void ejeTxt.offsetWidth; ejeTxt.textContent = EJES[i][1]; ejeTxt.classList.add('in'); blip(523 + i * 33, .3);
+  });
+  chips.appendChild(b);
+});
+ejeTxt.textContent = EJES[0][1];
+
+// Transmisión en vivo. Pegar en LIVE.link el link del evento de YouTube (youtube.com/live/…, watch?v=… o youtu.be/…)
+// o el del canal en formato youtube.com/channel/UC…  Durante el foro el video se muestra grande en la portada.
+const LIVE = { dia1: 'https://youtu.be/x4JWslvTCTE', dia2: 'https://youtube.com/live/BgMGxYd03_Q' };
+const LIVE_DAYS = [[Date.UTC(2026, 10, 19, 17, 0), Date.UTC(2026, 10, 19, 23, 30)], [Date.UTC(2026, 10, 20, 17, 0), Date.UTC(2026, 10, 20, 23, 30)]];
+(function setupLive() {
+  const vidOf = l => (l.match(/(?:youtu\.be\/|[?&]v=|\/live\/|\/embed\/)([\w-]{11})/) || [])[1];
+  const now = Date.now(), test = /[?&]envivo\b/.test(location.search);
+  const onAir = test || LIVE_DAYS.some(([a, b]) => now >= a - 60 * 60000 && now <= b);
+  const day2 = now >= Date.UTC(2026, 10, 20, 3, 0);
+  const V = { 1: vidOf(LIVE.dia1), 2: vidOf(LIVE.dia2 || LIVE.dia1) };
+  const embed = (v, auto) => `https://www.youtube-nocookie.com/embed/${v}?rel=0&playsinline=1${auto ? '&autoplay=1' : ''}`;
+  const mk = (v, auto, mute) => { const f = document.createElement('iframe'); f.src = embed(v, auto) + (mute ? '&mute=1' : ''); f.title = 'Transmisión en vivo del 1.er Foro ConexIA';
+    f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true; return f; };
+  // Reproductor de "El foro": muestra la miniatura del día y carga YouTube al tocar play
+  const screen = document.getElementById('tvScreen'), play = document.getElementById('tvPlay'), poster = document.getElementById('tvPoster'), yt = document.getElementById('tvYT');
+  const tabs = [...document.querySelectorAll('.tv-tabs button')];
+  let d = day2 ? 2 : 1;
+  const setDay = n => { d = n; tabs.forEach(b => b.setAttribute('aria-selected', b.dataset.d == n)); poster.src = `mini_dia${n}.jpg`;
+    yt.href = V[n] ? 'https://www.youtube.com/watch?v=' + V[n] : '#';
+    const f = screen.querySelector('iframe'); if (f) { f.remove(); play.hidden = false; } };
+  tabs.forEach(b => b.addEventListener('click', () => setDay(+b.dataset.d)));
+  poster.addEventListener('load', () => measure());
+  setDay(d);
+  play.addEventListener('click', () => {
+    if (!V[d]) return;
+    if (onAir && !document.getElementById('heroLive').hidden) { jump(0); return; } // durante el vivo, el video grande está en la portada
+    play.hidden = true; screen.appendChild(mk(V[d], true, false));
+  });
+  if (onAir) { document.getElementById('livePill').hidden = false; document.getElementById('liveT').textContent = 'En vivo ahora'; }
+  const hv = V[day2 ? 2 : 1];
+  if (onAir && hv) {
+    document.documentElement.classList.add('envivo'); document.getElementById('heroLive').hidden = false;
+    document.getElementById('heroFrame').appendChild(mk(hv, true, true));
+    document.getElementById('liveS').textContent = '· se ve arriba de todo, en la portada';
+  }
+})();
+
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copiado'; }
+  catch { const s = b.previousElementSibling.querySelector('strong'), rg = document.createRange(); rg.selectNodeContents(s); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(rg); b.textContent = 'Seleccionado'; }
+  setTimeout(() => { b.textContent = 'Copiar'; }, 1800);
+}));
+
+// ---------- Arranque ----------
+// (Lenis ya no se usa: el suavizado de la rueda lo hace SM)
+addEventListener('resize', () => { resize(); measure(); });
+if (window.ResizeObserver) new ResizeObserver(() => measure()).observe(document.querySelector('main'));
+if (document.fonts) document.fonts.ready.then(measure);
+resize();
+requestAnimationFrame(frame);
+window.__cx = { S };
+})();
+</script>
+
+</body>
+</html>
